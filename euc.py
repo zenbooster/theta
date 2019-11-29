@@ -7,29 +7,26 @@ from zencad import *
 
 
 PG29=from_brep('./PE_PG29.brep')
+j1550 = from_brep('./1550j.brep').down((side_compartment_depth-8.11)/2).rotateY(deg(180))
 nut_m5_len = dropout_depth
 nut_m5 = metric.metric_nut(5, 0.8, nut_m5_len, False).rotateX(deg(90)).forw(nut_m5_len/2)
 
 def get_side_compartment():
-	'''
-	w = side_compartment_width - 4
-	h = side_compartment_height - 4
-	d = side_compartment_depth - 4
-	rear = rectangle(w - 5, h - 5, True, True);
-	front = rectangle(w, h, True, True).up(d);
+	res = j1550
+	res = res.rotateX(deg(90))
 
-	res = loft([rear, front])
-	res = thicksolid(proto=res, t=4, refs=[point(0, 0, side_compartment_depth+side_compartment_depth/10)])
-	res = res.rotateX(deg(90))
-	'''
-	res = from_brep('./1550j.brep')
-	res = res.rotateY(deg(180))
-	res = res.rotateX(deg(90))
-	res = res.back(side_compartment_depth-8.11)
+	sole_thick = dropout_height - dropout_sole_pos
+	d = hole_d[10]
+	hole = cylinder(d/2, 10, True).down(side_compartment_height/2).forw(side_compartment_depth/2-(dropout_depth+4)/2)
+	res -= hole.left((dropout_width+8+d*4)/2-d) + hole.right((dropout_width+8+d*4)/2-d)
 
 	return res;
+	
+side_compartment = get_side_compartment()
 
-side_compartment = get_side_compartment().forw(side_compartment_depth / 2 - 4)
+def get_upper_compartment():
+	res = j1550
+	return res
 
 def get_dropout_holes(is_holes):
 	if is_holes:
@@ -125,13 +122,13 @@ def display_shell(alpha):
 	top = get_top_spacer()
 	top = top.up(side_compartment_height/2)
 	sc += top
-	m = sc.back(ofs_y) + sc.mirrorXZ().forw(ofs_y)
+	m = sc.back(ofs_y) + sc.rotateZ(deg(180)).forw(ofs_y)
 
-	m += side_compartment.rotateX(deg(-90)).up((side_compartment_height+side_compartment_depth+4)/2)
+	m += get_upper_compartment().up((side_compartment_height+side_compartment_depth+4)/2)
 	m += PG29.rotateZ(deg(90)).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(wheel_arch_width/2 + 50/2 + 0.4 + 1).down(side_compartment_height/2+35)
 
 	m = m.up(6)
-
+	
 	display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def display_shell_mounts():
@@ -142,7 +139,7 @@ def display_shell_mounts():
 	sole_thick = dropout_height - dropout_sole_pos
 	sp = get_sm_spacer().up((dropout_height-sole_thick+4+4)/2)
 	d = hole_d[10]
-	spi = get_inner_spacer().up((dropout_height-sole_thick+0)/2+4+5.4)
+	spi = get_inner_spacer().up((dropout_height-sole_thick)/2+4+5.4)
 	m += sp + spi.left((dropout_width+8+d*4)/2-d) + spi.right((dropout_width+8+d*4)/2-d)
 
 	mr = ml = m.down(shell_height_half + dropout_m_axle_pos + (dropout_height-sole_thick)/2-dropout_m_axle_pos-2)
@@ -182,9 +179,11 @@ def get_handle():
 	return m
 
 display_wheel()
-display_shell(0.5)
-#display_shell(0)
+#display_shell(0.5)
+display_shell(0)
 display_shell_mounts()
 
 display(get_handle().down(side_compartment_height/2+handle_ofs-6-10), color=(0.5, 0.5, 0.5, 0))
+
+ofs_y = (wheel_arch_width+side_compartment_depth)/2
 show()
