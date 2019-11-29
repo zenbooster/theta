@@ -17,6 +17,12 @@ def get_shell_mount_holes():
 	res = hole.left((dropout_width+8+d*4)/2-d) + hole.right((dropout_width+8+d*4)/2-d)
 	return res
 
+def get_top_spacer_holls():
+	d = hole_d[10]
+	hole = cylinder(d/2, 10, True)
+	res = hole.left(side_compartment_width/4) + hole.right(side_compartment_width/4)
+	return res
+
 def get_side_compartment_base():
 	res = j1550
 	res = res.rotateX(deg(90))
@@ -27,11 +33,13 @@ side_compartment_base = get_side_compartment_base()
 def get_side_compartment():
 	res = side_compartment_base
 	res -= get_shell_mount_holes().down(side_compartment_height/2).forw(side_compartment_depth/2-(dropout_depth+4)/2)
+	res -= get_top_spacer_holls().up(side_compartment_height/2).back(top_height/2-side_compartment_depth/2)
 
 	return res;
 	
 def get_upper_compartment():
 	res = j1550
+	res -= get_top_spacer_holls().down(side_compartment_depth/2).back((wheel_arch_width+top_height)/2)
 	return res
 
 def get_dropout_holes(is_holes):
@@ -107,22 +115,20 @@ def get_cable_protection():
 
 def get_top_spacer():
 	m = side_compartment_base
-	top_width = side_compartment_width-5.5*2
-	top_height = side_compartment_depth-5.5-23.4786
-	top_depth = 4
 	top = box(top_width, top_height, top_depth, center=True)
-	top = top.back(top_height/2-side_compartment_depth/2)
 	m = m.down(side_compartment_height/2)
 	top -= m
+	top -= get_top_spacer_holls()
 	return top
 
 def display_shell(alpha):
 	ofs_y = (wheel_arch_width+side_compartment_depth)/2
 
 	sc = get_side_compartment()
-	top = get_top_spacer()
+	top = get_top_spacer().back(top_height/2-side_compartment_depth/2)
 	top = top.up(side_compartment_height/2)
 	sc += top
+	#sc = top
 	m = sc.back(ofs_y) + sc.rotateZ(deg(180)).forw(ofs_y)
 
 	m += get_upper_compartment().up((side_compartment_height+side_compartment_depth+4)/2)
@@ -181,11 +187,11 @@ def get_handle():
 	return m
 
 display_wheel()
-#display_shell(0.5)
-display_shell(0)
+display_shell(0.5)
+#display_shell(0)
 display_shell_mounts()
 
 display(get_handle().down(side_compartment_height/2+handle_ofs-6-10), color=(0.5, 0.5, 0.5, 0))
 
-ofs_y = (wheel_arch_width+side_compartment_depth)/2
+#display(get_top_spacer())
 show()

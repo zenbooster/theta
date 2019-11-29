@@ -34,6 +34,10 @@ cable_protection_width = dropout_width
 cable_protection_height = 43+5*2
 cable_protection_depth = 19-1+4
 
+top_width = side_compartment_width-5.5*2
+top_height = side_compartment_depth-5.5-23.4786
+top_depth = 4
+
 hole_d = {
 	5:	5.3,
 	10:	10.5,
