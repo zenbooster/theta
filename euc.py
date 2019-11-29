@@ -109,7 +109,8 @@ def get_cable_protection():
 def get_top_spacer():
 	m = side_compartment
 	top_width = side_compartment_width-5.5*2
-	top_height = side_compartment_depth-5.5
+	#top_height = side_compartment_depth-5.5
+	top_height = side_compartment_depth-5.5-23.4786
 	top_depth = 4
 	top = box(top_width, top_height, top_depth, center=True)
 	top = top.back(top_height/2-side_compartment_depth/2)
