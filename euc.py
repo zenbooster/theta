@@ -2,7 +2,6 @@
 #coding: utf-8
 
 import metric
-#import rib
 from common import *
 from zencad import *
 
@@ -107,51 +106,21 @@ def get_cable_protection():
 	res -= get_dropout_holes(True).up((cable_protection_height) / 2 - 5)#.forw((cable_protection_depth)/2.0-0.25)
 	return res
 
-#rib_ofs = 39.55/2+4+5
 def display_shell(alpha):
 	ofs_y = (wheel_arch_width+side_compartment_depth)/2
-	'''
-	rb_hole = rib.get_rib(True).up(side_compartment_height/2 - rib_ofs)
-	rb = rib.get_rib(False)
-	rb = rb.up(side_compartment_height/2 - rib_ofs)
 
-	model = \
-		(side_compartment.back(ofs_y) + \
-		side_compartment.mirrorXZ().forw(ofs_y) - \
-		rb_hole.left(side_compartment_width/2 - rib_ofs) - rb_hole.right(side_compartment_width/2 - rib_ofs)) + \
-		rb.left(side_compartment_width/2 - rib_ofs) + rb.right(side_compartment_width/2 - rib_ofs)
-	'''
 	m = side_compartment.back(ofs_y) + side_compartment.mirrorXZ().forw(ofs_y)
-	#m += side_compartment.rotateX(deg(-90)).up((side_compartment_height+side_compartment_depth)/2)
 
 	top_width = side_compartment_width-5.5*2
 	top_height = (side_compartment_depth-5.5)*2+wheel_arch_width
 	top_depth = 4
-	top1 = box(top_width, top_height, top_depth, center=True)
-	
-	cut = box(10, wheel_arch_width + 2*10, 2, center=True).left(top_width/4)
-	cut += cylinder(5, 2, True).translate(-top_width/4, (wheel_arch_width + 2*10)/2, 0)
-	cut += cylinder(5, 2, True).translate(-top_width/4, -(wheel_arch_width + 2*10)/2, 0)
-	cut += box(10, (wheel_arch_width + 2*10) / 2, 2, center=True).forw((wheel_arch_width + 2*10) / 4)
-	cut += cylinder(5, 2, True)#.translate(0, 0, 0)
-	cut += cylinder(5, 2, True).translate(0, (wheel_arch_width + 2*10)/2, 0)
-	top1 -= cut.up(1)
-	
-	top1 = top1.up(side_compartment_height/2)
-	#top = fillet(proto=top, r=3, refs=[(0, -1, side_compartment_height), (-1, 0, side_compartment_height)])
-	#top = fillet(proto=top, r=1, refs=[(-10, 0, side_compartment_height/2+10)])
-	top1 -= m
-	top2 = box(top_width, top_height, top_depth, center=True)
-	top2 -= cut.down(1)
-	top2 = top2.up((side_compartment_height+2*top_depth)/2)
-	
-	m += top1.up(15)
-	m += top2.up(30)
+	top = box(top_width, top_height, top_depth, center=True)
+	top = top.up(side_compartment_height/2)
+	top -= m
+
+	m += top
+	m += side_compartment.rotateX(deg(-90)).up((side_compartment_height+side_compartment_depth)/2+4)
 	m += PG29.rotateZ(deg(90)).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(wheel_arch_width/2 + 50/2 + 0.4 + 1).down(side_compartment_height/2+35)
-	m += from_brep('./1550Z102.brep').rotateX(deg(90)).up((side_compartment_height+2*top_depth)/2 + 25).up(45)
-	
-	#m += box(41, 57, 20, center=True).up((side_compartment_height+20)/2+8-2).left((side_compartment_width-11)/2-41/2)
-	m += box(41, 57, 20, center=True).up((side_compartment_height-20-4)/2).left((side_compartment_width-11)/2-41/2)
 
 	m = m.up(6)
 
@@ -197,16 +166,12 @@ def display_wheel():
 		dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
 		color=(0.4, 0.4, 0.4, 0.0))
 
+handle_ofs = -(4 + side_compartment_depth)#(side_compartment_height)/2 + 4 + side_compartment_depth
 def get_handle():
-	width = side_compartment_width-70# - rib_ofs
-	model = interpolate([\
-		(-width*0.5, side_compartment_height), \
-		(-width*0.25, side_compartment_height + 90), \
-		(width*0.25, side_compartment_height + 90), \
-		(width*0.5, side_compartment_height)], \
-		[(0, 1), (1, 0), (1, 0), (0, -1)]).rotateX(deg(90))
-
-	return sweep(circle(12, wire=True).left(width*0.5-15).up(side_compartment_height), model)
+	m = from_brep('./1427C9.brep')
+	m = m.rotateX(deg(90))
+	m = m.up(side_compartment_height/2+side_compartment_depth+4+6).left(159.54/2)
+	return m
 
 
 display_wheel()
@@ -214,9 +179,7 @@ display_wheel()
 display_shell(0)
 display_shell_mounts()
 
-#display(get_handle().down(side_compartment_height/2+rib_ofs-20), color=(0.5, 0.5, 0.5, 0))
-#display(get_handle().down(side_compartment_height/2+rib_ofs-6-10), color=(0.5, 0.5, 0.5, 0))
-##display(get_handle().down(side_compartment_height/2+70-6-10), color=(0.5, 0.5, 0.5, 0))
+display(get_handle().down(side_compartment_height/2+handle_ofs-6-10), color=(0.5, 0.5, 0.5, 0))
 
 #display(nut_m5)
 show()
