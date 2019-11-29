@@ -73,13 +73,9 @@ def get_shell_mount():
 	return res
 
 def get_sm_spacer():
-	#res = box(dropout_width+8+5*4, dropout_depth+4, 8, center=True)
-	#res -= cylinder(hole_d[5]/2, 8, True).left((dropout_width+8+5*4)/2-5)
-	#res -= cylinder(hole_d[5]/2, 8, True).right((dropout_width+8+5*4)/2-5)
 	d = hole_d[10]
 	res = box(dropout_width+8+d*2*2, dropout_depth+4, 4, center=True)
-	res -= cylinder(d/2, 4, True).left((dropout_width+8+d*4)/2-d)
-	res -= cylinder(d/2, 4, True).right((dropout_width+8+d*4)/2-d)
+	res -= get_shell_mount_holes()
 
 	res -= side_compartment_base.up(side_compartment_height/2).back(side_compartment_depth/2-(dropout_depth+4)/2)
 	res -= box(dropout_width+8+d*4, dropout_depth+4, 4, center=True).up(4)
