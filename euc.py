@@ -99,7 +99,20 @@ def get_inner_spacer():
 	cut = box(d*2, cut_depth, h, center=True).back(cut_depth/2) - cylinder(r=d, h=h, yaw=deg(180), center=True).rotateZ(deg(180))
 	res -= cut
 
-	res -= side_compartment_base.up(side_compartment_height/2-5.4).back(side_compartment_depth/2-(dropout_depth+4)/2).right((dropout_width+8+d*4)/2-d)
+	res -= side_compartment_base.up(side_compartment_height/2-5.52).back(side_compartment_depth/2-(dropout_depth+4)/2).right((dropout_width+8+d*4)/2-d)
+	return res
+	
+def get_sm_inner_spacer():
+	d = hole_d[10]
+	h = 4
+	back_dt = 1
+	res = box(d*2, top_height-back_dt, h, center=True).back(back_dt/2)
+	res -= cylinder(d/2, h, True)
+	cut_depth = top_height/2
+	cut = box(d*2, cut_depth, h, center=True).back(cut_depth/2) - cylinder(r=d, h=h, yaw=deg(180), center=True).rotateZ(deg(180))
+	res -= cut
+
+	res -= side_compartment_base.down(side_compartment_height/2-5.37).back(side_compartment_depth/2-top_height/2).right((dropout_width+8+d*4)/2-d)
 	return res
 
 def get_cable_protection():
@@ -129,6 +142,9 @@ def display_shell(alpha):
 	top = top.up(side_compartment_height/2)
 	sc += top
 	#sc = top
+	spi = get_sm_inner_spacer().up((side_compartment_height)/2 - 5.37)
+	spi = spi.back(top_height/2-side_compartment_depth/2)#.forw((side_compartment_depth - (dropout_depth+4))/2)
+	sc += spi.left(side_compartment_width/4) + spi.right(side_compartment_width/4)
 	m = sc.back(ofs_y) + sc.rotateZ(deg(180)).forw(ofs_y)
 
 	m += get_upper_compartment().up((side_compartment_height+side_compartment_depth+4)/2)
@@ -147,7 +163,7 @@ def display_shell_mounts():
 	sole_thick = dropout_height - dropout_sole_pos
 	sp = get_sm_spacer().up((dropout_height-sole_thick+4+4)/2)
 	d = hole_d[10]
-	spi = get_inner_spacer().up((dropout_height-sole_thick)/2+4+5.4)
+	spi = get_inner_spacer().up((dropout_height-sole_thick)/2+4+5.52)
 	m += sp + spi.left((dropout_width+8+d*4)/2-d) + spi.right((dropout_width+8+d*4)/2-d)
 
 	mr = ml = m.down(shell_height_half + dropout_m_axle_pos + (dropout_height-sole_thick)/2-dropout_m_axle_pos-2)
