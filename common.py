@@ -22,12 +22,12 @@ upper_compartment_width = 171
 upper_compartment_height = 121
 upper_compartment_depth = 101
 
-dropout_width = 45
-dropout_height = 114
-dropout_depth = 21.5
+dropout_width = 44.8
+dropout_height = 113.6
+dropout_depth = 21.7
 dropout_m_axle_pos = 23
-dropout_p_axle_pos = 40
-dropout_sole_size = 52
+dropout_p_axle_pos = 40.2
+dropout_sole_size = 51.8
 dropout_sole_pos = 88
 
 cable_protection_width = dropout_width

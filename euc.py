@@ -10,6 +10,7 @@ PG29=from_brep('./PE_PG29.brep')
 j1550 = from_brep('./1550j.brep').down((side_compartment_depth-8.11)/2).rotateY(deg(180))
 nut_m5_len = dropout_depth
 nut_m5 = metric.metric_nut(5, 0.8, nut_m5_len, False).rotateX(deg(90)).forw(nut_m5_len/2)
+spit_dt = 8.9
 
 def get_shell_mount_holes():
 	d = hole_d[10]
@@ -20,7 +21,8 @@ def get_shell_mount_holes():
 def get_top_spacer_holls():
 	d = hole_d[10]
 	hole = cylinder(d/2, 10, True)
-	res = hole.left(side_compartment_width/4) + hole.right(side_compartment_width/4)
+	#res = hole.left(side_compartment_width/4) + hole.right(side_compartment_width/4)
+	res = hole.left(side_compartment_width/2 - spit_dt-d) + hole.right(side_compartment_width/2 - spit_dt-d)
 	return res
 
 def get_side_compartment_base():
@@ -39,7 +41,9 @@ def get_side_compartment():
 	
 def get_upper_compartment():
 	res = j1550
-	res -= get_top_spacer_holls().down(side_compartment_depth/2).back((wheel_arch_width+top_height)/2)
+	tsh = get_top_spacer_holls().down(side_compartment_depth/2)
+	res -= tsh.back((wheel_arch_width+top_height)/2)
+	res -= tsh.forw((wheel_arch_width+top_height)/2)
 	return res
 
 def get_dropout_holes(is_holes):
@@ -101,7 +105,7 @@ def get_inner_spacer():
 
 	res -= side_compartment_base.up(side_compartment_height/2-5.52).back(side_compartment_depth/2-(dropout_depth+4)/2).right((dropout_width+8+d*4)/2-d)
 	return res
-	
+'''
 def get_sm_inner_spacer():
 	d = hole_d[10]
 	h = 4
@@ -113,6 +117,20 @@ def get_sm_inner_spacer():
 	res -= cut
 
 	res -= side_compartment_base.down(side_compartment_height/2-5.37).back(side_compartment_depth/2-top_height/2).right((dropout_width+8+d*4)/2-d)
+	return res
+'''
+def get_top_inner_spacer():
+	d = hole_d[10]
+	h = 4
+	back_dt = 1
+	res = box(d*2, top_height-back_dt, h, center=True).back(back_dt/2)
+	res -= cylinder(d/2, h, True)
+	cut_depth = top_height/2
+	cut = box(d*2, cut_depth, h, center=True).back(cut_depth/2) - cylinder(r=d, h=h, yaw=deg(90), center=True).rotateZ(deg(180+90))
+	cut -= box(d, d, h, center=True).left(cut_depth/4).back(d/2)
+	res -= cut
+
+	res -= side_compartment_base.down(side_compartment_height/2-5.37).back(side_compartment_depth/2-top_height/2).right(side_compartment_width/2 - spit_dt-d)
 	return res
 
 def get_cable_protection():
@@ -142,9 +160,12 @@ def display_shell(alpha):
 	top = top.up(side_compartment_height/2)
 	sc += top
 	#sc = top
-	spi = get_sm_inner_spacer().up((side_compartment_height)/2 - 5.37)
-	spi = spi.back(top_height/2-side_compartment_depth/2)#.forw((side_compartment_depth - (dropout_depth+4))/2)
-	sc += spi.left(side_compartment_width/4) + spi.right(side_compartment_width/4)
+	#spi = get_sm_inner_spacer().up((side_compartment_height)/2 - 5.37)
+	spi = get_top_inner_spacer().up((side_compartment_height)/2 - 5.37)
+	spi = spi.back(top_height/2-side_compartment_depth/2)
+	#sc += spi.left(side_compartment_width/4) + spi.right(side_compartment_width/4)
+	d = hole_d[10]
+	sc += spi.left(side_compartment_width/2 - spit_dt-d) + spi.mirrorYZ().right(side_compartment_width/2 - spit_dt-d)
 	m = sc.back(ofs_y) + sc.rotateZ(deg(180)).forw(ofs_y)
 
 	m += get_upper_compartment().up((side_compartment_height+side_compartment_depth+4)/2)
