@@ -38,9 +38,10 @@ def get_gwdropout():
 	
 	delta = small_rounding_r+0.1
 	a = sole_thick - delta
-	b = (dropout_sole_size - (dropout_p_axle_pos))/2
+	b = (dropout_sole_size - (dropout_p_axle_pos))/4
 	c = sqrt(a*a + b*b)
-	f = a*b/c
+	step_size = 0.2
+	f = a*b/c+step_size
 	beta = asin(b/c)
 	delta = (c - sole_thick)/2 + delta
 	cut = box(dropout_width, f, c, center=True).up(delta)
@@ -48,7 +49,7 @@ def get_gwdropout():
 	cut = cut.rotateX(-beta)
 	cut = cut.translate(0, f/2, -c/2+delta)
 
-	sole -= cut.back((dropout_sole_size+f)/2)
+	sole -= cut.back((dropout_sole_size+f)/2-step_size)
 	sole = sole.translate(0, -dropout_sole_size/2, -sole_thick/2)
 	sole = sole.rotateX(deg(-sole_angle))
 	sole = sole.translate(0, dropout_sole_size/2, sole_thick_before_rounding_cathet_a/2)
@@ -57,9 +58,7 @@ def get_gwdropout():
 	delta_after_rounding = small_rounding_r-small_rounding_cathet_b
 	res = box(dropout_width, dropout_depth, dropout_height-(sole_thick_before_rounding_cathet_a+delta_after_rounding), center=True).up((sole_thick_before_rounding_cathet_a+delta_after_rounding)/2)
 	sole = fillet(proto=sole, r=sole_thick/2, refs=[(0, -dropout_sole_size/2, sole_thick/2)])
-	#sole = fillet(proto=sole, r=small_rounding_r, refs=[(0, 10, -10), (0, -dropout_sole_size, -sole_thick)])
 	sole = fillet(proto=sole, r=small_rounding_r, refs=[(0, dropout_sole_size/2, -sole_thick/2), (0, -dropout_sole_size/2, -sole_thick/2)])
-	#sole = fillet(proto=sole, r=small_rounding_r, refs=[(0, 10, -10)])
 	res += sole.back((dropout_sole_size-dropout_depth)/2).down((dropout_height-sole_thick_before_rounding_cathet_a)/2 - delta_after_rounding)
 	res -= holes
 	
@@ -109,5 +108,5 @@ def get_gwdropout():
 
 if __name__ == "__main__":
 	m = get_gwdropout()
-	display(m, color=(1, 1, 1, 0.5))
+	display(m)#, color=(1, 1, 1, 0.5))
 	show()
