@@ -9,6 +9,14 @@ from math import sin, cos
 nut_m5_len = dropout_depth
 nut_m5 = metric.metric_nut(5, 0.8, nut_m5_len, False).rotateX(deg(90)).forw(nut_m5_len/2)
 
+small_rounding_r = 4
+sole_angle = 2.5
+sole_thick = 24
+top_padding_holes = 3.6
+wheel_axle_big_d = 36.2
+wheel_axle_small_d = 16.2
+pedal_axis_d = 8
+
 def get_dropout_holes(is_holes):
 	if is_holes:
 		d = hole_d[5]
@@ -25,26 +33,24 @@ def get_dropout_holes(is_holes):
 	return res
 
 def get_gwdropout():
-	betta = 2.5
-	sole_thick = 24
-	sole_thick_a = sole_thick * cos(deg(betta))
-	sole_thick_dr_a = (sole_thick-4) * cos(deg(betta))
+	sole_thick_before_rounding_cathet_a = (sole_thick-small_rounding_r) * cos(deg(sole_angle))
 	sole = box(dropout_width, dropout_sole_size, sole_thick, center=True)
 	sole = sole.translate(0, -dropout_sole_size/2, -sole_thick/2)
-	sole = sole.rotateX(deg(-betta))
-	sole = sole.translate(0, dropout_sole_size/2, sole_thick_dr_a/2)
-	holes = get_dropout_holes(False).up(dropout_height/2-3.6)
-	delta = 4-(4*sin(deg(betta)))
-	res = box(dropout_width, dropout_depth, dropout_height-(sole_thick_dr_a+delta), center=True).up((sole_thick_dr_a+delta)/2)
+	sole = sole.rotateX(deg(-sole_angle))
+	sole = sole.translate(0, dropout_sole_size/2, sole_thick_before_rounding_cathet_a/2)
+	holes = get_dropout_holes(False).up(dropout_height/2-top_padding_holes)
+	small_rounding_cathet_b = small_rounding_r*sin(deg(sole_angle))
+	delta_after_rounding = small_rounding_r-small_rounding_cathet_b
+	res = box(dropout_width, dropout_depth, dropout_height-(sole_thick_before_rounding_cathet_a+delta_after_rounding), center=True).up((sole_thick_before_rounding_cathet_a+delta_after_rounding)/2)
 	sole = fillet(proto=sole, r=sole_thick/2, refs=[(0, -10, 10)])
-	sole = fillet(proto=sole, r=4, refs=[(0, 10, -10), (0, -10, -10)])
-	res += sole.back((dropout_sole_size-dropout_depth)/2).down((dropout_height-sole_thick_dr_a)/2 - delta)
+	sole = fillet(proto=sole, r=small_rounding_r, refs=[(0, 10, -10), (0, -10, -10)])
+	res += sole.back((dropout_sole_size-dropout_depth)/2).down((dropout_height-sole_thick_before_rounding_cathet_a)/2 - delta_after_rounding)
 	res -= holes
 	
-	res -= cylinder(16.2/2, dropout_depth, True).rotateX(deg(90)).up((dropout_height)/2 - 24.5)
+	res -= cylinder(wheel_axle_small_d/2, dropout_depth, True).rotateX(deg(90)).up((dropout_height)/2 - 24.5)
 	hblock = 4.5
 	hd = hblock+4.9#7.8
-	res -= cylinder(36.2/2, dropout_depth-hd, True).rotateX(deg(90)).up((dropout_height)/2 - 24.5).back(hd/2)
+	res -= cylinder(wheel_axle_big_d/2, dropout_depth-hd, True).rotateX(deg(90)).up((dropout_height)/2 - 24.5).back(hd/2)
 	a = 8.4
 	b = 9.0
 	c = 11.8
@@ -53,8 +59,8 @@ def get_gwdropout():
 	res -= block.up((dropout_height)/2 - 24.5 + c/2+s/2)
 	res -= block.mirrorXY().up((dropout_height)/2 - 24.5 - c/2-s/2)
 	hdc = hblock+3
-	cut = cylinder(36.2/2, dropout_depth-hdc, True).rotateX(deg(90))
-	cut ^= box(36.2, dropout_depth-hdc, s, center = True)
+	cut = cylinder(wheel_axle_big_d/2, dropout_depth-hdc, True).rotateX(deg(90))
+	cut ^= box(wheel_axle_big_d, dropout_depth-hdc, s, center = True)
 	cut = cut.up((dropout_height)/2 - 24.5).back(hdc/2)
 	res -= cut
 	
@@ -79,7 +85,7 @@ def get_gwdropout():
 	cut = fillet(proto = cut, r = pw/2.01, refs=[(0, ph/2, 1), (0, ph/2, -1), (0, -ph/2, 1), (0, -ph/2, -1)])
 	res -= cut.up(L-pw/2).back(-dropout_depth/2-pw+a+hblock + ph/2)
 	
-	res -= cylinder(4, dropout_width, True).rotateY(deg(90)).up(L).back(dropout_p_axle_pos - dropout_depth/2)
+	res -= cylinder(pedal_axis_d/2, dropout_width, True).rotateY(deg(90)).up(L).back(dropout_p_axle_pos - dropout_depth/2)
 	
 	#res += box(dropout_width, dropout_depth, dropout_height, center=True).forw(dropout_depth*2)
 	#res += box(dropout_width, dropout_depth, dropout_height, center=True).rotateX(deg(90)).down((dropout_height+dropout_depth)/2)
@@ -87,5 +93,5 @@ def get_gwdropout():
 
 if __name__ == "__main__":
 	m = get_gwdropout()
-	display(m, color=(1, 1, 1, 0.5))
+	display(m)#, color=(1, 1, 1, 0.5))
 	show()
