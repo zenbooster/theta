@@ -4,7 +4,7 @@
 import metric
 from common import *
 from zencad import *
-from math import cos
+from math import sin, cos
 
 nut_m5_len = dropout_depth
 nut_m5 = metric.metric_nut(5, 0.8, nut_m5_len, False).rotateX(deg(90)).forw(nut_m5_len/2)
@@ -25,19 +25,20 @@ def get_dropout_holes(is_holes):
 	return res
 
 def get_gwdropout():
-	betta = 30#2.5
-	sole_thick = 24#dropout_height - dropout_sole_pos
+	betta = 2.5
+	sole_thick = 24
 	sole_thick_a = sole_thick * cos(deg(betta))
+	sole_thick_dr_a = (sole_thick-4) * cos(deg(betta))
 	sole = box(dropout_width, dropout_sole_size, sole_thick, center=True)
 	sole = sole.translate(0, -dropout_sole_size/2, -sole_thick/2)
 	sole = sole.rotateX(deg(-betta))
-	sole = sole.translate(0, dropout_sole_size/2, sole_thick_a/2)
+	sole = sole.translate(0, dropout_sole_size/2, sole_thick_dr_a/2)
 	holes = get_dropout_holes(False).up(dropout_height/2-3.6)
-	res = box(dropout_width, dropout_depth, dropout_height-sole_thick_a, center=True).up(sole_thick_a/2)
-	#res = box(dropout_width, dropout_depth, dropout_height-sole_thick, center=True).up(sole_thick/2)
+	delta = 4-(4*sin(deg(betta)))
+	res = box(dropout_width, dropout_depth, dropout_height-(sole_thick_dr_a+delta), center=True).up((sole_thick_dr_a+delta)/2)
 	sole = fillet(proto=sole, r=sole_thick/2, refs=[(0, -10, 10)])
 	sole = fillet(proto=sole, r=4, refs=[(0, 10, -10), (0, -10, -10)])
-	res += sole.back((dropout_sole_size-dropout_depth)/2).down((dropout_height)/2-sole_thick_a/2)
+	res += sole.back((dropout_sole_size-dropout_depth)/2).down((dropout_height-sole_thick_dr_a)/2 - delta)
 	res -= holes
 	
 	res -= cylinder(16.2/2, dropout_depth, True).rotateX(deg(90)).up((dropout_height)/2 - 24.5)
@@ -78,13 +79,13 @@ def get_gwdropout():
 	cut = fillet(proto = cut, r = pw/2.01, refs=[(0, ph/2, 1), (0, ph/2, -1), (0, -ph/2, 1), (0, -ph/2, -1)])
 	res -= cut.up(L-pw/2).back(-dropout_depth/2-pw+a+hblock + ph/2)
 	
-	#res -= cylinder(4, dropout_width, True).rotateY(deg(90)).down((dropout_height-sole_thick)/2).back(dropout_p_axle_pos - dropout_depth/2)
 	res -= cylinder(4, dropout_width, True).rotateY(deg(90)).up(L).back(dropout_p_axle_pos - dropout_depth/2)
 	
-	res += box(dropout_width, dropout_depth, dropout_height, center=True).forw(dropout_depth*2)
+	#res += box(dropout_width, dropout_depth, dropout_height, center=True).forw(dropout_depth*2)
+	#res += box(dropout_width, dropout_depth, dropout_height, center=True).rotateX(deg(90)).down((dropout_height+dropout_depth)/2)
 	return res
 
 if __name__ == "__main__":
 	m = get_gwdropout()
-	display(m)
+	display(m, color=(1, 1, 1, 0.5))
 	show()
