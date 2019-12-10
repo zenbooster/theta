@@ -187,6 +187,29 @@ def get_handle():
 	m = m.up(side_compartment_height/2+side_compartment_depth+4+6).left(108.35/2)
 	return m
 
+def display_safety_arc():
+	shell_height_half = (side_compartment_height) / 2
+	wd = 355.6 # 14"
+	wd += (side_compartment_height+dropout_m_axle_pos - wd/2)*2
+	a = (-wd/2, -(shell_height_half + dropout_m_axle_pos)-25)
+	b = (-side_compartment_width/2, shell_height_half + side_compartment_depth+4+6)
+	c = (side_compartment_width/2, shell_height_half + side_compartment_depth+4+6)
+	d = (wd/2, -(shell_height_half + dropout_m_axle_pos)-25)
+	m = interpolate(pnts=[a, b, c, d],
+		tangs=[(0, 1), (1, 1), (1, -1), (0, -1)],
+		closed=False
+	)
+	m = sew([m, segment(a, d)])
+	m = m.rotateX(deg(90))
+	m = fill(m)
+	cut_height = dropout_m_axle_pos+25+8+4
+	cut = rectangle(side_compartment_width, cut_height, center=True).rotateX(deg(90)).down(shell_height_half+cut_height/2-6)
+	m -= cut
+	#m = m.rotateX(deg(90))
+	m = m.extrude(vec=(0, 4, 0), center=True)
+	m = m.back(wheel_arch_width/2) + m.forw(wheel_arch_width/2)
+	display(m, color=(0.3, 0.3, 0.3, 0.5))
+
 display_wheel()
 display_shell(0.5)
 #display_shell(0)
@@ -194,5 +217,5 @@ display_shell_mounts()
 
 display(get_handle().down(side_compartment_height/2+handle_ofs-6-10), color=(0.5, 0.5, 0.5, 0))
 
-#display(get_top_spacer())
+display_safety_arc()
 show()
