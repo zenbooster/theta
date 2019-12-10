@@ -4,6 +4,7 @@
 import metric
 from common import *
 from zencad import *
+import mcm5dropout
 
 
 PG29=from_brep('./PE_PG29.brep')
@@ -46,31 +47,6 @@ def get_upper_compartment():
 	res -= tsh.forw((wheel_arch_width+top_height)/2)
 	return res
 
-def get_dropout_holes(is_holes):
-	if is_holes:
-		d = hole_d[5]
-		n = cylinder(d/2, 4, True).rotateX(deg(90))
-	else:
-		d = 5
-		n = nut_m5
-	
-	res = n.left(15) + n.right(15)
-	n = n.down(43)
-	res += n.left(15) + n.right(15)
-	n = n.down(26)
-	res += n.left(15) + n.right(15)
-	return res
-
-def get_dropout():
-	sole_thick = dropout_height - dropout_sole_pos
-	sole = box(dropout_width, dropout_sole_size, sole_thick, center=True)
-	return \
-		box(dropout_width, dropout_depth, dropout_height, center=True)+\
-		fillet(proto=sole, r=sole_thick/2, refs=[(0, -10, 10)])\
-			.back((dropout_sole_size-dropout_depth)/2).down((dropout_height-sole_thick)/2)-\
-		get_dropout_holes(False).up(dropout_height/2 - (dropout_sole_pos - 69) + 14)-\
-		cylinder(4, dropout_width, True).rotateY(deg(90)).down((dropout_height-sole_thick)/2).back(dropout_p_axle_pos - dropout_depth/2)
-
 def get_shell_mount():
 	sole_thick = dropout_height - dropout_sole_pos
 	d = hole_d[10]
@@ -80,8 +56,9 @@ def get_shell_mount():
 	res += \
 		box(dropout_width+8, dropout_depth+4, dropout_height - sole_thick+4, center=True) - \
 		box(dropout_width, dropout_depth, dropout_height - sole_thick, center=True).translate(0, 2, -2) - \
-		get_dropout_holes(True).up(dropout_height/2 - (dropout_sole_pos - 69) + 14 - (sole_thick/2+4/2)).back(dropout_depth/2)
-	res -= cylinder(37/2, 4, True).rotateX(deg(90)).back(dropout_depth/2).up((dropout_height-sole_thick+4)/2-dropout_m_axle_pos-4)
+		mcm5dropout.get_dropout_holes(True).up(dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dropout_depth/2)
+		#mcm5dropout.get_dropout_holes(True).up(dropout_height/2 - (dropout_sole_pos - 69) + 14 - (sole_thick/2+4/2)).back(dropout_depth/2)
+	res -= cylinder(mcm5dropout.wheel_axle_big_d/2, 4, True).rotateX(deg(90)).back(dropout_depth/2).up((dropout_height-sole_thick+4)/2-dropout_m_axle_pos-4)
 	return res
 
 def get_sm_spacer():
@@ -105,20 +82,7 @@ def get_inner_spacer():
 
 	res -= side_compartment_base.up(side_compartment_height/2-5.52).back(side_compartment_depth/2-(dropout_depth+4)/2).right((dropout_width+8+d*4)/2-d)
 	return res
-'''
-def get_sm_inner_spacer():
-	d = hole_d[10]
-	h = 4
-	back_dt = 1
-	res = box(d*2, top_height-back_dt, h, center=True).back(back_dt/2)
-	res -= cylinder(d/2, h, True)
-	cut_depth = top_height/2
-	cut = box(d*2, cut_depth, h, center=True).back(cut_depth/2) - cylinder(r=d, h=h, yaw=deg(180), center=True).rotateZ(deg(180))
-	res -= cut
 
-	res -= side_compartment_base.down(side_compartment_height/2-5.37).back(side_compartment_depth/2-top_height/2).right((dropout_width+8+d*4)/2-d)
-	return res
-'''
 def get_top_inner_spacer():
 	d = hole_d[10]
 	h = 4
@@ -141,7 +105,7 @@ def get_cable_protection():
 	res -= fillet(proto=box(cable_protection_width, cable_protection_depth-4, cable_protection_height-5*2*2-8, center=True), r=r-2, refs=[(0, -30, -1), (0, -30, 1)]).back(r-2-2)
 	#res += box(cable_protection_width, cable_protection_depth, cable_protection_height-5*2*2, center=True).back(cable_protection_depth/2-2)
 	#res -= box(cable_protection_width, cable_protection_depth-4, cable_protection_height-5*2*2-8, center=True).back((cable_protection_depth-4)/2-2)
-	res -= get_dropout_holes(True).up((cable_protection_height) / 2 - 5)#.forw((cable_protection_depth)/2.0-0.25)
+	res -= mcm5dropout.get_dropout_holes(True).up((cable_protection_height) / 2 - mcm5dropout.top_padding_holes)#.forw((cable_protection_depth)/2.0-0.25)
 	return res
 
 def get_top_spacer():
@@ -191,7 +155,7 @@ def display_shell_mounts():
 	ml = mr.back((wheel_arch_width+dropout_depth+4)/2)
 	
 	mr = mr.rotateZ(deg(180))
-	mr += get_cable_protection().rotateZ(deg(180)).down(shell_height_half + dropout_m_axle_pos+3.5).right((cable_protection_width-dropout_width)/2).forw((dropout_depth)/2.0+4)
+	mr += get_cable_protection().rotateZ(deg(180)).down(shell_height_half + dropout_m_axle_pos+4/2).right((cable_protection_width-dropout_width)/2).forw((dropout_depth)/2.0+4)
 	mr = mr.forw((wheel_arch_width+dropout_depth+4)/2)
 	display(ml + mr, color=(0.4, 0.5, 0.4, 0.5))
 
@@ -210,7 +174,7 @@ def display_wheel():
 			color=(0.4, 0.2, 0.2, 0.0)
 	)
 
-	dropout = get_dropout().down(shell_height_half + dropout_height/2)
+	dropout = mcm5dropout.get_dropout().down(shell_height_half + dropout_height/2)
 	display(\
 		dropout.back((wheel_arch_width+dropout_depth)/2)+\
 		dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\

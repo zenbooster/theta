@@ -32,7 +32,7 @@ def get_dropout_holes(is_holes):
 	res += n.left(15) + n.right(15)
 	return res
 
-def get_gwdropout():
+def get_dropout():
 	sole_thick_before_rounding_cathet_a = (sole_thick-small_rounding_r) * cos(deg(sole_angle))
 	sole = box(dropout_width, dropout_sole_size, sole_thick, center=True)
 	
@@ -62,21 +62,21 @@ def get_gwdropout():
 	res += sole.back((dropout_sole_size-dropout_depth)/2).down((dropout_height-sole_thick_before_rounding_cathet_a)/2 - delta_after_rounding)
 	res -= holes
 	
-	res -= cylinder(wheel_axle_small_d/2, dropout_depth, True).rotateX(deg(90)).up((dropout_height)/2 - 24.5)
+	res -= cylinder(wheel_axle_small_d/2, dropout_depth, True).rotateX(deg(90)).up((dropout_height)/2 - dropout_m_axle_pos)
 	hblock = 4.5
 	hd = hblock+4.9#7.8
-	res -= cylinder(wheel_axle_big_d/2, dropout_depth-hd, True).rotateX(deg(90)).up((dropout_height)/2 - 24.5).back(hd/2)
+	res -= cylinder(wheel_axle_big_d/2, dropout_depth-hd, True).rotateX(deg(90)).up((dropout_height)/2 - dropout_m_axle_pos).back(hd/2)
 	a = 8.4
 	b = 9.0
 	c = 11.8
 	block = polygon(pnts=[(-a/2, -c/2), (-a/2, -c/2+b), (a/2, c/2), (a/2, -c/2)], wire=False).extrude(vec=dropout_width, center=True).rotateX(deg(90)).rotateZ(deg(-90)).forw((dropout_depth-a)/2 - hblock)
 	s = 7.8
-	res -= block.up((dropout_height)/2 - 24.5 + c/2+s/2)
-	res -= block.mirrorXY().up((dropout_height)/2 - 24.5 - c/2-s/2)
+	res -= block.up((dropout_height)/2 - dropout_m_axle_pos + c/2+s/2)
+	res -= block.mirrorXY().up((dropout_height)/2 - dropout_m_axle_pos - c/2-s/2)
 	hdc = hblock+3
 	cut = cylinder(wheel_axle_big_d/2, dropout_depth-hdc, True).rotateX(deg(90))
 	cut ^= box(wheel_axle_big_d, dropout_depth-hdc, s, center = True)
-	cut = cut.up((dropout_height)/2 - 24.5).back(hdc/2)
+	cut = cut.up((dropout_height)/2 - dropout_m_axle_pos).back(hdc/2)
 	res -= cut
 	
 	ph = 18
@@ -107,6 +107,7 @@ def get_gwdropout():
 	return res
 
 if __name__ == "__main__":
-	m = get_gwdropout()
+	m = get_dropout()
+	#to_stl(m, 'd:\mcm5dropout.stl', 0.01)
 	display(m)#, color=(1, 1, 1, 0.5))
 	show()
