@@ -116,7 +116,7 @@ def get_top_spacer():
 	top -= get_top_spacer_holls()
 	return top
 
-def display_shell(alpha):
+def get_shell():
 	ofs_y = (wheel_arch_width+side_compartment_depth)/2
 
 	sc = get_side_compartment()
@@ -137,7 +137,10 @@ def display_shell(alpha):
 	m += PG29.rotateZ(deg(90)).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(wheel_arch_width/2 + 50/2 + 0.4 + 1).down(side_compartment_height/2+35)
 
 	m = m.up(6)
-	
+	return m
+
+def display_shell(alpha):
+	m = get_shell()
 	display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def display_shell_mounts():
@@ -190,11 +193,13 @@ def get_handle():
 def display_safety_arc():
 	shell_height_half = (side_compartment_height) / 2
 	wd = 355.6 # 14"
-	wd += (side_compartment_height+dropout_m_axle_pos - wd/2)*2
-	a = (-wd/2, -(shell_height_half + dropout_m_axle_pos)-25)
+	wheel_arch_clearance = side_compartment_height+dropout_m_axle_pos - wd/2
+	wd_padding = wd + wheel_arch_clearance*2
+
+	a = (-wd_padding/2+wheel_arch_clearance, -(shell_height_half + dropout_m_axle_pos)-wheel_arch_clearance)
 	b = (-side_compartment_width/2, shell_height_half + side_compartment_depth+4+6)
 	c = (side_compartment_width/2, shell_height_half + side_compartment_depth+4+6)
-	d = (wd/2, -(shell_height_half + dropout_m_axle_pos)-25)
+	d = (wd_padding/2-wheel_arch_clearance, -(shell_height_half + dropout_m_axle_pos)-wheel_arch_clearance)
 	m = interpolate(pnts=[a, b, c, d],
 		tangs=[(0, 1), (1, 1), (1, -1), (0, -1)],
 		closed=False
@@ -202,12 +207,18 @@ def display_safety_arc():
 	m = sew([m, segment(a, d)])
 	m = m.rotateX(deg(90))
 	m = fill(m)
-	cut_height = dropout_m_axle_pos+25+8+4
-	cut = rectangle(side_compartment_width, cut_height, center=True).rotateX(deg(90)).down(shell_height_half+cut_height/2-6)
+
+	h = b[1] - a[1]
+	k = (h + wheel_arch_clearance*2) / h
+	m = m.translate(0, 0, -(b[1] - h/2))
+	m = m.scale(k) - m
+	m = m.translate(0, 0, (b[1] - h/2))
+
+	cut = rectangle(wd, wheel_arch_clearance, center=True).rotateX(deg(90)).down(shell_height_half + dropout_m_axle_pos + wheel_arch_clearance+ wheel_arch_clearance/2 + (4+2)-6)
 	m -= cut
-	#m = m.rotateX(deg(90))
+
 	m = m.extrude(vec=(0, 4, 0), center=True)
-	m = m.back(wheel_arch_width/2) + m.forw(wheel_arch_width/2)
+	m = m.back((wheel_arch_width+4)/2) + m.forw((wheel_arch_width+4)/2)
 	display(m, color=(0.3, 0.3, 0.3, 0.5))
 
 display_wheel()
