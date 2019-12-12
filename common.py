@@ -52,3 +52,8 @@ bearing_width = { # ГОСТ 12876-67
 
 nut_m5_len = dropout_depth
 nut_m5 = metric.metric_nut(5, 0.8, nut_m5_len, False).rotateX(deg(90)).forw(nut_m5_len/2)
+
+gap_dt = 0.2
+
+def gap(x, k=1):
+	return x + gap_dt * k
