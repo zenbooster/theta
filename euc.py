@@ -3,21 +3,13 @@
 
 import metric
 from common import *
-from zencad import *
 import mcm5dropout
+import shell_mount
 
 
 PG29=from_brep('./PE_PG29.brep')
 j1550 = from_brep('./1550j.brep').down((side_compartment_depth-8.11)/2).rotateY(deg(180))
-nut_m5_len = dropout_depth
-nut_m5 = metric.metric_nut(5, 0.8, nut_m5_len, False).rotateX(deg(90)).forw(nut_m5_len/2)
 spit_dt = 8.9
-
-def get_shell_mount_holes():
-	d = hole_d[10]
-	hole = cylinder(d/2, 10, True)
-	res = hole.left((dropout_width+8+d*4)/2-d) + hole.right((dropout_width+8+d*4)/2-d)
-	return res
 
 def get_top_spacer_holls():
 	d = hole_d[10]
@@ -35,7 +27,7 @@ side_compartment_base = get_side_compartment_base()
 
 def get_side_compartment():
 	res = side_compartment_base
-	res -= get_shell_mount_holes().down(side_compartment_height/2).forw(side_compartment_depth/2-(dropout_depth+4)/2)
+	res -= shell_mount.get_shell_mount_holes().down(side_compartment_height/2).forw(side_compartment_depth/2-shell_mount.top_mount_depth/2)
 	res -= get_top_spacer_holls().up(side_compartment_height/2).back(top_height/2-side_compartment_depth/2)
 
 	return res;
@@ -47,40 +39,26 @@ def get_upper_compartment():
 	res -= tsh.forw((wheel_arch_width+top_height)/2)
 	return res
 
-def get_shell_mount():
-	sole_thick = dropout_height - dropout_sole_pos
-	d = hole_d[10]
-	res = box(dropout_width+8+d*2*2, dropout_depth+4, 4, center=True)
-	res -= get_shell_mount_holes()
-	res = res.up((dropout_height-sole_thick)/2)
-	res += \
-		box(dropout_width+8, dropout_depth+4, dropout_height - sole_thick+4, center=True) - \
-		box(dropout_width, dropout_depth, dropout_height - sole_thick, center=True).translate(0, 2, -2) - \
-		mcm5dropout.get_dropout_holes(True).up(dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dropout_depth/2)
-		#mcm5dropout.get_dropout_holes(True).up(dropout_height/2 - (dropout_sole_pos - 69) + 14 - (sole_thick/2+4/2)).back(dropout_depth/2)
-	res -= cylinder(mcm5dropout.wheel_axle_big_d/2, 4, True).rotateX(deg(90)).back(dropout_depth/2).up((dropout_height-sole_thick+4)/2-dropout_m_axle_pos-4)
-	return res
-
 def get_sm_spacer():
 	d = hole_d[10]
-	res = box(dropout_width+8+d*2*2, dropout_depth+4, 4, center=True)
-	res -= get_shell_mount_holes()
+	res = box(dropout_width+8+d*2*2, shell_mount.top_mount_depth, 4, center=True)
+	res -= shell_mount.get_shell_mount_holes()
 
-	res -= side_compartment_base.up(side_compartment_height/2).back(side_compartment_depth/2-(dropout_depth+4)/2)
-	res -= box(dropout_width+8+d*4, dropout_depth+4, 4, center=True).up(4)
+	res -= side_compartment_base.up(side_compartment_height/2).back(side_compartment_depth/2-shell_mount.top_mount_depth/2)
+	res -= box(dropout_width+8+d*4, shell_mount.top_mount_depth, 4, center=True).up(4)
 	return res
 
 def get_inner_spacer():
 	d = hole_d[10]
 	h = 4
 	back_dt = 1
-	res = box(d*2, dropout_depth+4-back_dt, h, center=True).back(back_dt/2)
+	res = box(d*2, shell_mount.top_mount_depth-back_dt, h, center=True).back(back_dt/2)
 	res -= cylinder(d/2, h, True)
-	cut_depth = (dropout_depth+4)/2
+	cut_depth = shell_mount.top_mount_depth/2
 	cut = box(d*2, cut_depth, h, center=True).back(cut_depth/2) - cylinder(r=d, h=h, yaw=deg(180), center=True).rotateZ(deg(180))
 	res -= cut
 
-	res -= side_compartment_base.up(side_compartment_height/2-5.52).back(side_compartment_depth/2-(dropout_depth+4)/2).right((dropout_width+8+d*4)/2-d)
+	res -= side_compartment_base.up(side_compartment_height/2-5.52).back(side_compartment_depth/2-shell_mount.top_mount_depth/2).right((dropout_width+8+d*4)/2-d)
 	return res
 
 def get_top_inner_spacer():
@@ -146,7 +124,7 @@ def display_shell(alpha):
 def display_shell_mounts():
 	shell_height_half = (side_compartment_height) / 2
 	sole_thick = dropout_height - dropout_sole_pos
-	m = get_shell_mount()
+	m = shell_mount.get_shell_mount()
 
 	sole_thick = dropout_height - dropout_sole_pos
 	sp = get_sm_spacer().up((dropout_height-sole_thick+4+4)/2)
@@ -155,12 +133,12 @@ def display_shell_mounts():
 	m += sp + spi.left((dropout_width+8+d*4)/2-d) + spi.right((dropout_width+8+d*4)/2-d)
 
 	mr = ml = m.down(shell_height_half + dropout_m_axle_pos + (dropout_height-sole_thick)/2-dropout_m_axle_pos-2)
-	ml = mr.back((wheel_arch_width+dropout_depth+4)/2)
+	ml = mr.back((wheel_arch_width+shell_mount.top_mount_depth)/2)
 	
 	mr = mr.rotateZ(deg(180))
-	mr += get_cable_protection().rotateZ(deg(180)).down(shell_height_half + dropout_m_axle_pos+4/2).right((cable_protection_width-dropout_width)/2).forw((dropout_depth)/2.0+4)
-	mr = mr.forw((wheel_arch_width+dropout_depth+4)/2)
-	display(ml + mr, color=(0.4, 0.5, 0.4, 0.5))
+	mr += get_cable_protection().rotateZ(deg(180)).down(shell_height_half + dropout_m_axle_pos+4/2).right((cable_protection_width-dropout_width)/2).forw(-shell_mount.top_mount_depth/2 + dropout_depth+4+2)
+	mr = mr.forw((wheel_arch_width+shell_mount.top_mount_depth)/2)
+	display(ml + mr, color=(0.4, 0.5, 0.4))#, 0.5))
 
 def display_wheel():
 	shell_height_half = (side_compartment_height) / 2

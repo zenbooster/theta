@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 #coding: utf-8
+from zencad import *
+import metric
 
 common_clearance = 7
 batt_1p_width = 140
@@ -43,3 +45,10 @@ hole_d = {
 	10:	10.5,
 	24:	25
 }
+
+bearing_width = { # ГОСТ 12876-67
+	10: 22
+}
+
+nut_m5_len = dropout_depth
+nut_m5 = metric.metric_nut(5, 0.8, nut_m5_len, False).rotateX(deg(90)).forw(nut_m5_len/2)

@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 #coding: utf-8
-
-import metric
 from common import *
-from zencad import *
 from math import sin, cos, asin, sqrt
-
-nut_m5_len = dropout_depth
-nut_m5 = metric.metric_nut(5, 0.8, nut_m5_len, False).rotateX(deg(90)).forw(nut_m5_len/2)
 
 small_rounding_r = 4
 sole_angle = 2.5
