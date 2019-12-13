@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 #coding: utf-8
 
+from math import sqrt
 import metric
 from common import *
 import mcm5dropout
 import shell_mount
 
 
-PG29=from_brep('./PE_PG29.brep')
+#PG29=from_brep('./PE_PG29.brep')
 j1550 = from_brep('./1550j.brep').down((side_compartment_depth-8.11)/2).rotateY(deg(180))
 spit_dt = 8.9
 
@@ -79,10 +80,8 @@ def get_cable_protection():
 	res = box(cable_protection_width, 4, cable_protection_height, center=True)
 	delta=1
 	r = cable_protection_depth / 2
-	res += fillet(proto=box(cable_protection_width, cable_protection_depth, cable_protection_height-5*2*2, center=True), r=r, refs=[(0, -30, -1), (0, -30, 1)]).back(r-2)
-	res -= fillet(proto=box(cable_protection_width, cable_protection_depth-4, cable_protection_height-5*2*2-8, center=True), r=r-2, refs=[(0, -30, -1), (0, -30, 1)]).back(r-2-2)
-	#res += box(cable_protection_width, cable_protection_depth, cable_protection_height-5*2*2, center=True).back(cable_protection_depth/2-2)
-	#res -= box(cable_protection_width, cable_protection_depth-4, cable_protection_height-5*2*2-8, center=True).back((cable_protection_depth-4)/2-2)
+	res += fillet(proto=box(cable_protection_width, cable_protection_depth, cable_protection_height-5*2, center=True), r=r, refs=[(0, -30, -1), (0, -30, 1)]).down(5).back(r-2)
+	res -= fillet(proto=box(cable_protection_width, cable_protection_depth-4, cable_protection_height-5*2-8, center=True), r=r-2, refs=[(0, -30, -1), (0, -30, 1)]).down(5).back(r-2-2)
 	res -= mcm5dropout.get_dropout_holes(True).up((cable_protection_height) / 2 - mcm5dropout.top_padding_holes)#.forw((cable_protection_depth)/2.0-0.25)
 	return res
 
@@ -101,18 +100,21 @@ def get_shell():
 	top = get_top_spacer().back(top_height/2-side_compartment_depth/2)
 	top = top.up(side_compartment_height/2)
 	sc += top
-	#sc = top
-	#spi = get_sm_inner_spacer().up((side_compartment_height)/2 - 5.37)
 	spi = get_top_inner_spacer().up((side_compartment_height)/2 - 5.37)
 	spi = spi.back(top_height/2-side_compartment_depth/2)
-	#sc += spi.left(side_compartment_width/4) + spi.right(side_compartment_width/4)
 	d = hole_d[10]
 	sc += spi.left(side_compartment_width/2 - spit_dt-d) + spi.mirrorYZ().right(side_compartment_width/2 - spit_dt-d)
 	m = sc.back(ofs_y) + sc.rotateZ(deg(180)).forw(ofs_y)
 
 	m += get_upper_compartment().up((side_compartment_height+side_compartment_depth+4)/2)
-	#m += get_side_compartment().rotateX(deg(-90)).up((side_compartment_height+side_compartment_depth+4)/2)
-	m += PG29.rotateZ(deg(90)).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(wheel_arch_width/2 + 50/2 + 0.4 + 1).down(side_compartment_height/2+35)
+	#m += PG29.rotateZ(deg(90)).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(wheel_arch_width/2 + 50/2 + 0.4 + 1).down(side_compartment_height/2+35)
+	
+	vmu20_D1 = 25.8
+	vmu20_S1 = 39 # меньше за счёт скруглений
+	vmu20_S2 = 35
+	vmu20_y = wheel_arch_width/2 + 5 + vmu20_S2/2
+	m -= cylinder(vmu20_D1/2, 12, True).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(vmu20_y).down(side_compartment_height/2)
+	m += ngon((vmu20_S2 * 2 / sqrt(3))/2, 6, False).extrude(10).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(vmu20_y).down(side_compartment_height/2 - 5 - 5)
 
 	m = m.up(6)
 	return m
