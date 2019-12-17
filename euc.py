@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #coding: utf-8
 
-from math import sqrt
+from math import sqrt, tan
 import metric
 from common import *
 import mcm5dropout
@@ -112,9 +112,16 @@ def get_shell():
 	vmu20_D1 = 25.8
 	vmu20_S1 = 39 # меньше за счёт скруглений
 	vmu20_S2 = 35
-	vmu20_y = wheel_arch_width/2 + 5 + vmu20_S2/2
-	m -= cylinder(vmu20_D1/2, 12, True).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(vmu20_y).down(side_compartment_height/2)
-	m += ngon((vmu20_S2 * 2 / sqrt(3))/2, 6, False).extrude(10).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(vmu20_y).down(side_compartment_height/2 - 5 - 5)
+	vmu20_y = wheel_arch_width/2 +2.5 + gap(vmu20_S2/2)
+	vmu20_y2 = wheel_arch_width/2 +side_compartment_depth - gap(vmu20_S2/2)
+	#dt_right = (dropout_width+50*2+8)/2
+	dt_right = side_compartment_width/2 - vmu20_S1/2 - 11
+	m -= cylinder(vmu20_D1/2, 12, True).rotateX(deg(-1.5)).right(dt_right).forw(vmu20_y).down(side_compartment_height/2)
+	nut = ngon((vmu20_S2 * 2 / sqrt(3))/2, 6, False).extrude(10)
+	nut = nut.translate(0, -vmu20_S2/2, 0)
+	nut = nut.rotateX(deg(-1.5))
+	nut = nut.translate(0, vmu20_S2/2, 0)
+	m += nut.right(dt_right).forw(vmu20_y).down(side_compartment_height/2 - ((vmu20_y2-vmu20_y) * tan(deg(1.5))) - 3)
 
 	m = m.up(6)
 	return m
