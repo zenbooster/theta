@@ -6,7 +6,8 @@ import mcm5dropout
 
 hex_nut_m10_d = gap(17)
 #hex_nut_m10_D = 18.9
-side_compartment_thickness_at_the_base = 5 # подбираем экспериментально
+#side_compartment_thickness_at_the_base = 2.5
+side_compartment_thickness_at_the_base = 5 # IRL, уже напечатали просто
 top_mount_depth = bearing_width[10] + side_compartment_thickness_at_the_base * 2
 lug_depth = top_mount_depth
 
@@ -42,12 +43,16 @@ def get_shell_mount():
 	stiffener = stiffener.forw(dt_stiffener_y) + stiffener.back(dt_stiffener_y)
 	res += stiffener
 	res = res.up((gap_dropout_height-sole_thick)/2)
-	res += box(gap_dropout_width+8, lug_depth, gap_dropout_height - sole_thick+4, center=True).forw(top_mount_depth/2-lug_depth/2)
-	res -= box(gap_dropout_width, gap_dropout_depth, gap_dropout_height - sole_thick, center=True).translate(0, top_mount_depth/2-gap_dropout_depth/2, -2)
-
+	gap_hbh = mcm5dropout.get_dropout_higher_bevel_height()-gap(4.3)
+	dt_down = (gap_hbh - (gap_dropout_height - sole_thick))/2
+	dt_down4 = (gap_hbh+4 - (gap_dropout_height - sole_thick+4))/2
+	dt_down_d2 = (gap_hbh-d*2 - (gap_dropout_height - sole_thick-d*2))/2
+	res += box(gap_dropout_width+8, lug_depth, gap_hbh+4, center=True).down(dt_down4).forw(top_mount_depth/2-lug_depth/2)
+	# делаем полость под стойку:
+	res -= box(gap_dropout_width, gap_dropout_depth, gap_hbh, center=True).down(dt_down).translate(0, top_mount_depth/2-gap_dropout_depth/2, -2)
 	fwd_cut_depth = lug_depth - gap_dropout_depth-4
-	res -= box(gap_dropout_width, fwd_cut_depth, gap_dropout_height - sole_thick+4, center=True).translate(0, top_mount_depth/2-gap_dropout_depth-(fwd_cut_depth/2+4), -2+2)
-	res -= box(gap_dropout_width+8, fwd_cut_depth, gap_dropout_height - sole_thick-d*2, center=True).translate(0, top_mount_depth/2-gap_dropout_depth-(fwd_cut_depth/2+4), -2-d)
+	res -= box(gap_dropout_width, fwd_cut_depth, gap_hbh+4, center=True).down(dt_down4).translate(0, top_mount_depth/2-gap_dropout_depth-(fwd_cut_depth/2+4), -2+2)
+	res -= box(gap_dropout_width+8, fwd_cut_depth, gap_hbh-d*2, center=True).down(dt_down_d2).translate(0, top_mount_depth/2-gap_dropout_depth-(fwd_cut_depth/2+4), -2-d)
 	stiffener = get_stiffener(fwd_cut_depth).rotateZ(deg(90))
 	stiffener = stiffener.translate(-(gap_dropout_width/2+4)+4/2, 0, (gap_dropout_height-sole_thick-4)/2-fwd_cut_depth/2-d*2)
 	stiffener += stiffener.mirrorYZ()

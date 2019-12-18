@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 #coding: utf-8
 from common import *
-from math import sin, cos, asin, sqrt
+from math import sin, cos, asin, tan, sqrt
 
 small_rounding_r = 4
 sole_angle = 2.5
 sole_thick = 24
+sole_thick_before_rounding_cathet_a = (sole_thick-small_rounding_r) * cos(deg(sole_angle))
+small_rounding_cathet_b = small_rounding_r*sin(deg(sole_angle))
+delta_after_rounding = small_rounding_r-small_rounding_cathet_b
 top_padding_holes = 3.6
 wheel_axle_big_d = 36.2
 wheel_axle_small_d = 16.2
 pedal_axis_d = 8
+bevel_height = 4.3
 
 def get_dropout_holes(is_holes):
 	if is_holes:
@@ -26,8 +30,18 @@ def get_dropout_holes(is_holes):
 	res += n.left(15) + n.right(15)
 	return res
 
+def get_dropout_below_bevel_height():
+	return sole_thick_before_rounding_cathet_a+delta_after_rounding
+
+def get_dropout_straight_back_height():
+	bbh = get_dropout_below_bevel_height()
+	return dropout_height-bbh
+
+def get_dropout_higher_bevel_height():
+	sbh = get_dropout_straight_back_height()
+	return sbh-(dropout_depth+bevel_height)*tan(deg(sole_angle))
+
 def get_dropout():
-	sole_thick_before_rounding_cathet_a = (sole_thick-small_rounding_r) * cos(deg(sole_angle))
 	sole = box(dropout_width, dropout_sole_size, sole_thick, center=True)
 	
 	delta = small_rounding_r+0.1
@@ -48,9 +62,9 @@ def get_dropout():
 	sole = sole.rotateX(deg(-sole_angle))
 	sole = sole.translate(0, dropout_sole_size/2, sole_thick_before_rounding_cathet_a/2)
 	holes = get_dropout_holes(False).up(dropout_height/2-top_padding_holes)
-	small_rounding_cathet_b = small_rounding_r*sin(deg(sole_angle))
-	delta_after_rounding = small_rounding_r-small_rounding_cathet_b
-	res = box(dropout_width, dropout_depth, dropout_height-(sole_thick_before_rounding_cathet_a+delta_after_rounding), center=True).up((sole_thick_before_rounding_cathet_a+delta_after_rounding)/2)
+	bbh = get_dropout_below_bevel_height()
+	sbh = get_dropout_straight_back_height()
+	res = box(dropout_width, dropout_depth, sbh, center=True).up(bbh/2)
 	sole = fillet(proto=sole, r=sole_thick/2, refs=[(0, -dropout_sole_size/2, sole_thick/2)])
 	sole = fillet(proto=sole, r=small_rounding_r, refs=[(0, dropout_sole_size/2, -sole_thick/2), (0, -dropout_sole_size/2, -sole_thick/2)])
 	res += sole.back((dropout_sole_size-dropout_depth)/2).down((dropout_height-sole_thick_before_rounding_cathet_a)/2 - delta_after_rounding)
@@ -95,6 +109,11 @@ def get_dropout():
 	res -= cut.up(L-pw/2).back(-dropout_depth/2-pw+a+hblock + ph/2)
 	
 	res -= cylinder(pedal_axis_d/2, dropout_width, True).rotateY(deg(90)).up(L).back(dropout_p_axle_pos - dropout_depth/2)
+	
+	#усиление угла:
+	a = sqrt(2*(4.3**2))
+	hbh = get_dropout_higher_bevel_height()
+	res += box(dropout_width, a, a, center=True).rotateX(deg(45)).back(dropout_depth/2).down(-dropout_height/2 + hbh)
 	
 	#res += box(dropout_width, dropout_depth, dropout_height, center=True).forw(dropout_depth*2)
 	#res += box(dropout_width, dropout_depth, dropout_height, center=True).rotateX(deg(90)).down((dropout_height+dropout_depth)/2)

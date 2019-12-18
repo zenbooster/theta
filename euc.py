@@ -132,7 +132,6 @@ def display_shell(alpha):
 
 def display_shell_mounts():
 	shell_height_half = (side_compartment_height) / 2
-	sole_thick = dropout_height - dropout_sole_pos
 	m = shell_mount.get_shell_mount()
 
 	sole_thick = dropout_height - dropout_sole_pos
@@ -147,7 +146,7 @@ def display_shell_mounts():
 	mr = mr.rotateZ(deg(180))
 	mr += get_cable_protection().rotateZ(deg(180)).down(shell_height_half + dropout_m_axle_pos+4/2).right((cable_protection_width-dropout_width)/2).forw(-shell_mount.top_mount_depth/2 + dropout_depth+4+2)
 	mr = mr.forw((wheel_arch_width+shell_mount.top_mount_depth)/2)
-	display(ml + mr, color=(0.4, 0.5, 0.4))#, 0.5))
+	display(ml + mr, color=(0.4, 0.5, 0.4, 0.5))
 
 def display_wheel():
 	shell_height_half = (side_compartment_height) / 2
