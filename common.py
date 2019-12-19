@@ -2,6 +2,7 @@
 #coding: utf-8
 from zencad import *
 import metric
+from enum import Enum
 
 common_clearance = 7
 batt_1p_width = 140
@@ -42,10 +43,19 @@ top_width = side_compartment_width-5.5*2
 top_height = side_compartment_depth-5.5-23.4786
 top_depth = 4
 
+class HoleType(Enum):
+	tap = 1
+	threaded = 2
+	fasteners = 3
+
 hole_d = {
 	5:	5.3,
 	10:	10.5,
 	24:	25
+}
+
+hole_tap_d = {
+	5:	4.2
 }
 
 bearing_width = { # ГОСТ 12876-67

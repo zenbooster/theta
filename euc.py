@@ -82,7 +82,7 @@ def get_cable_protection():
 	r = cable_protection_depth / 2
 	res += fillet(proto=box(cable_protection_width, cable_protection_depth, cable_protection_height-5*2, center=True), r=r, refs=[(0, -30, -1), (0, -30, 1)]).down(5).back(r-2)
 	res -= fillet(proto=box(cable_protection_width, cable_protection_depth-4, cable_protection_height-5*2-8, center=True), r=r-2, refs=[(0, -30, -1), (0, -30, 1)]).down(5).back(r-2-2)
-	res -= mcm5dropout.get_dropout_holes(True).up((cable_protection_height) / 2 - mcm5dropout.top_padding_holes)#.forw((cable_protection_depth)/2.0-0.25)
+	res -= mcm5dropout.get_dropout_holes(HoleType.fasteners).up((cable_protection_height) / 2 - mcm5dropout.top_padding_holes)#.forw((cable_protection_depth)/2.0-0.25)
 	return res
 
 def get_top_spacer():

@@ -60,7 +60,7 @@ def get_shell_mount():
 	res += stiffener
 
 	dt_holes_back = (lug_depth-4)/2-fwd_cut_depth
-	res -= mcm5dropout.get_dropout_holes(True).up(gap_dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dt_holes_back)
+	res -= mcm5dropout.get_dropout_holes(HoleType.fasteners).up(gap_dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dt_holes_back)
 	res -= cylinder(gap(mcm5dropout.wheel_axle_big_d/2), 4, True).rotateX(deg(90)).back(dt_holes_back).up((gap_dropout_height-sole_thick-4)/2-dropout_m_axle_pos)
 	return res
 
