@@ -7,9 +7,7 @@ from common import *
 import mcm5dropout
 import shell_mount
 
-
-#PG29=from_brep('./PE_PG29.brep')
-j1550 = from_brep('./1550j.brep').down((side_compartment_depth-8.11)/2).rotateY(deg(180))
+j1550 = from_brep('./1550J.brep').down((side_compartment_depth-8.11)/2).rotateY(deg(180))
 spit_dt = 8.9
 
 def get_top_spacer_holls():
