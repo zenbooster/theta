@@ -168,11 +168,11 @@ def display_wheel():
 		color=(0.4, 0.4, 0.4, 0.0))
 
 handle_ofs = -(4 + side_compartment_depth)
-def get_handle():
-	m = from_brep('./1427C5.brep')
-	m = m.rotateX(deg(90))
-	m = m.up(side_compartment_height/2+side_compartment_depth+4+6).left(108.35/2)
-	return m
+#def get_handle():
+	#m = from_brep('./1427C5.brep')
+	#m = m.rotateX(deg(90))
+	#m = m.up(side_compartment_height/2+side_compartment_depth+4+6).left(108.35/2)
+	#return m
 
 def display_safety_arc():
 	shell_height_half = (side_compartment_height) / 2
@@ -188,29 +188,47 @@ def display_safety_arc():
 		tangs=[(0, 1), (1, 1), (1, -1), (0, -1)],
 		closed=False
 	)
+	h = b[1] - a[1]
+	k = (h + wheel_arch_clearance*2) / h
+	pnts = m.uniform_points(6)
+	rib = (cylinder(20/2, wheel_arch_width, True)-cylinder(hole_d[5]/2, wheel_arch_width, True)).rotateX(deg(90))
+	t = 1+(k-1)/2
+	ribs = nullshape()
+	for rib in [rib.translate(pnt[0]*t, 0, pnt[1]*t) for pnt in pnts]:
+		ribs += rib
+
+	hl = circle(hole_d[5]/2).rotateX(deg(90))
+	holes = nullshape()
+	for hl in [hl.translate(pnt[0]*t, 0, pnt[1]*t) for pnt in pnts]:
+		holes += hl
+
+	# handle
+	ribs += (cylinder(20/2, pnts[3][0]-pnts[2][0], True).rotateY(deg(90)).translate((pnts[2][0]+pnts[3][0])*t/2, 0, pnts[2][1]*t))
+
 	m = sew([m, segment(a, d)])
 	m = m.rotateX(deg(90))
 	m = fill(m)
 
-	h = b[1] - a[1]
-	k = (h + wheel_arch_clearance*2) / h
 	m = m.translate(0, 0, -(b[1] - h/2))
 	m = m.scale(k) - m
 	m = m.translate(0, 0, (b[1] - h/2))
 
 	cut = rectangle(wd, wheel_arch_clearance, center=True).rotateX(deg(90)).down(shell_height_half + dropout_m_axle_pos + wheel_arch_clearance+ wheel_arch_clearance/2 + (4+2)-6)
 	m -= cut
+	m -= holes
 
 	m = m.extrude(vec=(0, 4, 0), center=True)
 	m = m.back((wheel_arch_width+4)/2) + m.forw((wheel_arch_width+4)/2)
-	display(m, color=(0.3, 0.3, 0.3, 0.5))
+	m += ribs
+	display(m, color=(0.3, 0.3, 0.3, 0))#.5))
+	#display(ribs, color=(0.3, 0.3, 0.3, 0))#.5))
 
 display_wheel()
-display_shell(0.5)
-#display_shell(0)
+#display_shell(0.5)
+display_shell(0)
 display_shell_mounts()
 
-display(get_handle().down(side_compartment_height/2+handle_ofs-6-10), color=(0.5, 0.5, 0.5, 0))
+#display(get_handle().down(side_compartment_height/2+handle_ofs-6-10), color=(0.5, 0.5, 0.5, 0))
 
 display_safety_arc()
 show()
