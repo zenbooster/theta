@@ -167,22 +167,17 @@ def display_wheel():
 		dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
 		color=(0.4, 0.4, 0.4, 0.0))
 
-handle_ofs = -(4 + side_compartment_depth)
-#def get_handle():
-	#m = from_brep('./1427C5.brep')
-	#m = m.rotateX(deg(90))
-	#m = m.up(side_compartment_height/2+side_compartment_depth+4+6).left(108.35/2)
-	#return m
-
 def display_safety_arc():
 	shell_height_half = (side_compartment_height) / 2
 	wd = 355.6 # 14"
 	wheel_arch_clearance = side_compartment_height+dropout_m_axle_pos - wd/2
 	wd_padding = wd + wheel_arch_clearance*2
 
+	side_compartment_wbottom = side_compartment_width - 2*side_compartment_depth/tan(deg(90-1.5))
+
 	a = (-wd_padding/2+wheel_arch_clearance, -(shell_height_half + dropout_m_axle_pos)-wheel_arch_clearance)
-	b = (-side_compartment_width/2, shell_height_half + side_compartment_depth+4+6)
-	c = (side_compartment_width/2, shell_height_half + side_compartment_depth+4+6)
+	b = (-side_compartment_wbottom/2, shell_height_half + side_compartment_depth+4+6)
+	c = (side_compartment_wbottom/2, shell_height_half + side_compartment_depth+4+6)
 	d = (wd_padding/2-wheel_arch_clearance, -(shell_height_half + dropout_m_axle_pos)-wheel_arch_clearance)
 	m = interpolate(pnts=[a, b, c, d],
 		tangs=[(0, 1), (1, 1), (1, -1), (0, -1)],
@@ -216,6 +211,10 @@ def display_safety_arc():
 	cut = rectangle(wd, wheel_arch_clearance, center=True).rotateX(deg(90)).down(shell_height_half + dropout_m_axle_pos + wheel_arch_clearance+ wheel_arch_clearance/2 + (4+2)-6)
 	m -= cut
 	m -= holes
+	mnt = rectangle(wd+2, 25, center=True).rotateX(deg(90)).down(side_compartment_height/2 - 25/2 - 6)
+	mnt += rectangle(wd, 25, center=True).rotateX(deg(90)).up(side_compartment_height/2 - 25/2 + 6)
+	mnt -= rectangle(side_compartment_wbottom, side_compartment_height, center=True).rotateX(deg(90)).up(6)
+	m += mnt
 
 	m = m.extrude(vec=(0, 4, 0), center=True)
 	m = m.back((wheel_arch_width+4)/2) + m.forw((wheel_arch_width+4)/2)
@@ -223,13 +222,6 @@ def display_safety_arc():
 	# поперечные:
 	b1_height = side_compartment_height + 2 + side_compartment_depth
 	b1_up = 6+(side_compartment_depth+2)/2
-	'''
-	b1 = box(4, side_compartment_depth+25, b1_height, center=True).back((wheel_arch_width+(side_compartment_depth+25))/2).left(side_compartment_width/2).up(b1_up)
-	transverse_arc = fillet(proto=b1, r=25, refs=[
-		(-side_compartment_width/2, -(wheel_arch_width/2 + (side_compartment_depth+25)), b1_up + b1_height/2),
-		(-side_compartment_width/2, -(wheel_arch_width/2 + (side_compartment_depth+25)), -(b1_up + b1_height/2))
-	])
-	'''
 	b1_width = side_compartment_depth+25
 	b1 = box(4, b1_width, b1_height, center=True)
 	transverse_arc = fillet(proto=b1, r=25, refs=[
@@ -264,8 +256,5 @@ display_wheel()
 #display_shell(0.5)
 display_shell(0)
 display_shell_mounts()
-
-#display(get_handle().down(side_compartment_height/2+handle_ofs-6-10), color=(0.5, 0.5, 0.5, 0))
-
 display_safety_arc()
 show()
