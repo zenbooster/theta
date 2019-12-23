@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 #coding: utf-8
+from zencad import *
+import metric
+from enum import Enum
 
 common_clearance = 7
 batt_1p_width = 140
@@ -17,7 +20,10 @@ tire_thickness_inch = 2.125
 wheel_arch_width = 93
 side_compartment_width = 275
 side_compartment_height = 175
-side_compartment_depth = 66.60
+#side_compartment_depth = 66.60
+side_compartment_depth = 66.65
+side_compartment_bottom_thickness = side_compartment_top_thickness = 2.5
+side_compartment_wall_thickness = 3
 upper_compartment_width = 171
 upper_compartment_height = 121
 upper_compartment_depth = 101
@@ -38,8 +44,30 @@ top_width = side_compartment_width-5.5*2
 top_height = side_compartment_depth-5.5-23.4786
 top_depth = 4
 
+class HoleType(Enum):
+	tap = 1
+	threaded = 2
+	fasteners = 3
+
 hole_d = {
 	5:	5.3,
 	10:	10.5,
 	24:	25
 }
+
+hole_tap_d = {
+	5:	4.2
+}
+
+bearing_width = { # ГОСТ 12876-67
+	10: 22
+}
+
+nut_m5_len = dropout_depth
+nut_m5 = metric.metric_nut(5, 0.8, nut_m5_len, False).rotateX(deg(90)).forw(nut_m5_len/2)
+
+gap_dt = 0.2
+#gap_dt = 0
+
+def gap(x, k=1):
+	return x + gap_dt * k
