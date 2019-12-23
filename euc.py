@@ -144,7 +144,7 @@ def display_shell_mounts():
 	mr = mr.rotateZ(deg(180))
 	mr += get_cable_protection().rotateZ(deg(180)).down(shell_height_half + dropout_m_axle_pos+4/2).right((cable_protection_width-dropout_width)/2).forw(-shell_mount.top_mount_depth/2 + dropout_depth+4+2)
 	mr = mr.forw((wheel_arch_width+shell_mount.top_mount_depth)/2)
-	display(ml + mr, color=(0.4, 0.5, 0.4, 0.5))
+	display(ml + mr, color=(0.4, 0.5, 0.4, 0))#.5))
 
 def display_wheel():
 	shell_height_half = (side_compartment_height) / 2
@@ -220,6 +220,43 @@ def display_safety_arc():
 	m = m.extrude(vec=(0, 4, 0), center=True)
 	m = m.back((wheel_arch_width+4)/2) + m.forw((wheel_arch_width+4)/2)
 	m += ribs
+	# поперечные:
+	b1_height = side_compartment_height + 2 + side_compartment_depth
+	b1_up = 6+(side_compartment_depth+2)/2
+	'''
+	b1 = box(4, side_compartment_depth+25, b1_height, center=True).back((wheel_arch_width+(side_compartment_depth+25))/2).left(side_compartment_width/2).up(b1_up)
+	transverse_arc = fillet(proto=b1, r=25, refs=[
+		(-side_compartment_width/2, -(wheel_arch_width/2 + (side_compartment_depth+25)), b1_up + b1_height/2),
+		(-side_compartment_width/2, -(wheel_arch_width/2 + (side_compartment_depth+25)), -(b1_up + b1_height/2))
+	])
+	'''
+	b1_width = side_compartment_depth+25
+	b1 = box(4, b1_width, b1_height, center=True)
+	transverse_arc = fillet(proto=b1, r=25, refs=[
+		(0, -b1_width, b1_height/2),
+		(0, -b1_width, -(b1_height/2))
+	])
+	cut_height = side_compartment_height-25*2
+	cut = box(4, side_compartment_depth, cut_height, center=True).forw(25/2).down((b1_height-cut_height)/2 - 25)
+	transverse_arc -= cut
+	cut_height = side_compartment_depth+2-25
+	cut = box(4, side_compartment_depth, cut_height, center=True).forw(25/2).up((b1_height-cut_height)/2-25)
+	transverse_arc -= cut
+	cut_height = 25
+	cut_width = (side_compartment_height-wheel_arch_width)/2
+	cut = box(4, cut_width, cut_height, center=True).forw(b1_width/2-cut_width/2).up((b1_height-cut_height)/2)
+	transverse_arc -= cut
+	transverse_arc = transverse_arc.translate(0, -b1_width/2, 0)
+	transverse_arc = transverse_arc.rotateZ(deg(-1.5))
+	transverse_arc = transverse_arc.translate(0, b1_width/2, 0)
+	transverse_arc_mxz = transverse_arc.mirrorXZ()
+	transverse_arc_myz = transverse_arc.mirrorYZ()
+	transverse_arc_mxzyz = transverse_arc_mxz.mirrorYZ()
+	m += transverse_arc.back((wheel_arch_width+b1_width)/2).left((side_compartment_width)/2).up(b1_up)
+	m += transverse_arc_mxz.forw((wheel_arch_width+b1_width)/2).left((side_compartment_width)/2).up(b1_up)
+	m += transverse_arc_myz.back((wheel_arch_width+b1_width)/2).right((side_compartment_width)/2).up(b1_up)
+	m += transverse_arc_mxzyz.forw((wheel_arch_width+b1_width)/2).right((side_compartment_width)/2).up(b1_up)
+
 	display(m, color=(0.3, 0.3, 0.3, 0))#.5))
 	#display(ribs, color=(0.3, 0.3, 0.3, 0))#.5))
 

@@ -20,7 +20,8 @@ tire_thickness_inch = 2.125
 wheel_arch_width = 93
 side_compartment_width = 275
 side_compartment_height = 175
-side_compartment_depth = 66.60
+#side_compartment_depth = 66.60
+side_compartment_depth = 66.65
 side_compartment_bottom_thickness = side_compartment_top_thickness = 2.5
 side_compartment_wall_thickness = 3
 upper_compartment_width = 171
