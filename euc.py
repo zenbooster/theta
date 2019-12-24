@@ -174,6 +174,7 @@ def display_safety_arc():
 	wd_padding = wd + wheel_arch_clearance*2
 
 	side_compartment_wbottom = side_compartment_width - 2*side_compartment_depth/tan(deg(90-1.5))
+	side_compartment_hbottom = side_compartment_height - 2*side_compartment_depth/tan(deg(90-1.5))
 
 	a = (-wd_padding/2+wheel_arch_clearance, -(shell_height_half + dropout_m_axle_pos)-wheel_arch_clearance)
 	b = (-side_compartment_wbottom/2, shell_height_half + side_compartment_depth+4+6)
@@ -186,7 +187,7 @@ def display_safety_arc():
 	h = b[1] - a[1]
 	k = (h + wheel_arch_clearance*2) / h
 	pnts = m.uniform_points(6)
-	rib = (cylinder(20/2, wheel_arch_width, True)-cylinder(hole_d[5]/2, wheel_arch_width, True)).rotateX(deg(90))
+	rib = (cylinder(20/2, wheel_arch_width-8, True)-cylinder(hole_d[5]/2, wheel_arch_width-8, True)).rotateX(deg(90))
 	t = 1+(k-1)/2
 	ribs = nullshape()
 	for rib in [rib.translate(pnt[0]*t, 0, pnt[1]*t) for pnt in pnts]:
@@ -211,13 +212,14 @@ def display_safety_arc():
 	cut = rectangle(wd, wheel_arch_clearance, center=True).rotateX(deg(90)).down(shell_height_half + dropout_m_axle_pos + wheel_arch_clearance+ wheel_arch_clearance/2 + (4+2)-6)
 	m -= cut
 	m -= holes
-	mnt = rectangle(wd+2, 25, center=True).rotateX(deg(90)).down(side_compartment_height/2 - 25/2 - 6)
-	mnt += rectangle(wd, 25, center=True).rotateX(deg(90)).up(side_compartment_height/2 - 25/2 + 6)
-	mnt -= rectangle(side_compartment_wbottom, side_compartment_height, center=True).rotateX(deg(90)).up(6)
+	h =  side_compartment_hbottom - 2.5*2
+	mnt = rectangle(wd+2, 25, center=True).rotateX(deg(90)).down(h/2 - 25/2 - 6)
+	mnt += rectangle(wd, 25, center=True).rotateX(deg(90)).up(h/2 - 25/2 + 6)
+	mnt -= rectangle(side_compartment_wbottom-(20+2.5)*2, h, center=True).rotateX(deg(90)).up(6)
 	m += mnt
 
 	m = m.extrude(vec=(0, 4, 0), center=True)
-	m = m.back((wheel_arch_width+4)/2) + m.forw((wheel_arch_width+4)/2)
+	m = m.back((wheel_arch_width-4)/2) + m.forw((wheel_arch_width-4)/2)
 	m += ribs
 	# поперечные:
 	b1_height = side_compartment_height + 2 + side_compartment_depth
