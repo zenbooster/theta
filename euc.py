@@ -222,18 +222,18 @@ def display_safety_arc():
 	m = m.back((wheel_arch_width-4)/2) + m.forw((wheel_arch_width-4)/2)
 	m += ribs
 	# поперечные:
-	b1_height = side_compartment_height + 2 + side_compartment_depth
-	b1_up = 6+(side_compartment_depth+2)/2
+	b1_height = side_compartment_hbottom-2.5+4+side_compartment_depth-4.1
+	b1_up = 6-side_compartment_hbottom/2+b1_height/2+2.5
 	b1_width = side_compartment_depth+25
 	b1 = box(4, b1_width, b1_height, center=True)
 	transverse_arc = fillet(proto=b1, r=25, refs=[
 		(0, -b1_width, b1_height/2),
 		(0, -b1_width, -(b1_height/2))
 	])
-	cut_height = side_compartment_height-25*2
+	cut_height = side_compartment_hbottom-25*2-2.5*2
 	cut = box(4, side_compartment_depth, cut_height, center=True).forw(25/2).down((b1_height-cut_height)/2 - 25)
 	transverse_arc -= cut
-	cut_height = side_compartment_depth+2-25
+	cut_height = (side_compartment_depth-4.1)+4+2.5-25
 	cut = box(4, side_compartment_depth, cut_height, center=True).forw(25/2).up((b1_height-cut_height)/2-25)
 	transverse_arc -= cut
 	cut_height = 25
@@ -254,9 +254,9 @@ def display_safety_arc():
 	display(m, color=(0.3, 0.3, 0.3, 0))#.5))
 	#display(ribs, color=(0.3, 0.3, 0.3, 0))#.5))
 
-display_wheel()
+#display_wheel()
 #display_shell(0.5)
 display_shell(0)
-display_shell_mounts()
+#display_shell_mounts()
 display_safety_arc()
 show()
