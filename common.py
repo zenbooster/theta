@@ -19,14 +19,12 @@ tire_thickness_inch = 2.125
 # distance between dropauts:
 wheel_arch_width = 93
 side_compartment_width = 275
+side_compartment_inner_width = 266.91
 side_compartment_height = 175
-#side_compartment_depth = 66.60
+side_compartment_inner_depth = 62.5
 side_compartment_depth = 66.65
 side_compartment_bottom_thickness = side_compartment_top_thickness = 2.5
 side_compartment_wall_thickness = 3
-upper_compartment_width = 171
-upper_compartment_height = 121
-upper_compartment_depth = 101
 
 dropout_width = 44.8
 dropout_height = 113.6
@@ -52,6 +50,7 @@ class HoleType(Enum):
 hole_d = {
 	5:	5.3,
 	10:	10.5,
+	20: 21,
 	24:	25
 }
 

@@ -5,7 +5,8 @@ from math import sqrt, tan
 import metric
 from common import *
 import mcm5dropout
-import shell_mount
+#import shell_mount
+import shell_mount_milled as sm
 
 j1550 = from_brep('./1550J.brep').down((side_compartment_depth-8.11)/2).rotateY(deg(180))
 spit_dt = 8.9
@@ -13,8 +14,10 @@ spit_dt = 8.9
 def get_top_spacer_holls():
 	d = hole_d[10]
 	hole = cylinder(d/2, 10, True)
-	#res = hole.left(side_compartment_width/4) + hole.right(side_compartment_width/4)
-	res = hole.left(side_compartment_width/2 - spit_dt-d) + hole.right(side_compartment_width/2 - spit_dt-d)
+	res = hole.left(side_compartment_inner_width/2-spit_dt-d) + hole.right(side_compartment_inner_width/2 - spit_dt-d)
+	d = 16
+	hole = cylinder(d/2, 10, True)
+	res += hole.right(side_compartment_inner_width/4)
 	return res
 
 def get_side_compartment_base():
@@ -24,10 +27,18 @@ def get_side_compartment_base():
 
 side_compartment_base = get_side_compartment_base()
 
-def get_side_compartment():
+def get_side_compartment(is_right):
 	res = side_compartment_base
-	res -= shell_mount.get_shell_mount_holes().down(side_compartment_height/2).forw(side_compartment_depth/2-shell_mount.top_mount_depth/2)
-	res -= get_top_spacer_holls().up(side_compartment_height/2).back(top_height/2-side_compartment_depth/2)
+	cut = sm.get_shell_mount_holes().down(side_compartment_height/2).forw(side_compartment_depth/2-sm.top_mount_depth/2)
+	cut += get_top_spacer_holls().up(side_compartment_height/2).back(top_height/2-side_compartment_depth/2)
+
+	if is_right:
+		cut = cut.mirrorYZ()
+
+	res -= cut
+	
+	if is_right:
+		res = res.rotateZ(deg(180))
 
 	return res;
 	
@@ -36,42 +47,50 @@ def get_upper_compartment():
 	tsh = get_top_spacer_holls().down(side_compartment_depth/2)
 	res -= tsh.back((wheel_arch_width+top_height)/2)
 	res -= tsh.forw((wheel_arch_width+top_height)/2)
+
+	#d = hole_d[10]	
+	#nut = ngon((16 * 2 / sqrt(3))/2, 6, False).extrude(10).down(side_compartment_inner_depth/2)
+	#res += nut.back((wheel_arch_width+top_height)/2).left(side_compartment_inner_width/2-spit_dt-d)
+	
 	return res
 
 def get_sm_spacer():
 	d = hole_d[10]
-	res = box(dropout_width+8+d*2*2, shell_mount.top_mount_depth, 4, center=True)
-	res -= shell_mount.get_shell_mount_holes()
+	res = box(dropout_width+8+d*2*2, sm.top_mount_depth, 4, center=True)
+	res -= sm.get_shell_mount_holes()
 
-	res -= side_compartment_base.up(side_compartment_height/2).back(side_compartment_depth/2-shell_mount.top_mount_depth/2)
-	res -= box(dropout_width+8+d*4, shell_mount.top_mount_depth, 4, center=True).up(4)
+	res -= side_compartment_base.up(side_compartment_height/2).back(side_compartment_depth/2-sm.top_mount_depth/2)
+	res -= box(dropout_width+8+d*4, sm.top_mount_depth, 4, center=True).up(4)
 	return res
 
 def get_inner_spacer():
 	d = hole_d[10]
 	h = 4
 	back_dt = 1
-	res = box(d*2, shell_mount.top_mount_depth-back_dt, h, center=True).back(back_dt/2)
+	res = box(d*2, sm.top_mount_depth-back_dt, h, center=True).back(back_dt/2)
 	res -= cylinder(d/2, h, True)
-	cut_depth = shell_mount.top_mount_depth/2
+	cut_depth = sm.top_mount_depth/2
 	cut = box(d*2, cut_depth, h, center=True).back(cut_depth/2) - cylinder(r=d, h=h, yaw=deg(180), center=True).rotateZ(deg(180))
 	res -= cut
 
-	res -= side_compartment_base.up(side_compartment_height/2-5.52).back(side_compartment_depth/2-shell_mount.top_mount_depth/2).right((dropout_width+8+d*4)/2-d)
+	res -= side_compartment_base.up(side_compartment_height/2-5.52).back(side_compartment_depth/2-sm.top_mount_depth/2).right((dropout_width+8+d*4)/2-d)
 	return res
 
 def get_top_inner_spacer():
 	d = hole_d[10]
 	h = 4
 	back_dt = 1
-	res = box(d*2, top_height-back_dt, h, center=True).back(back_dt/2)
+	res = box(d*2+spit_dt, top_height-back_dt, h, center=True).back(back_dt/2).left(spit_dt/2)
 	res -= cylinder(d/2, h, True)
 	cut_depth = top_height/2
-	cut = box(d*2, cut_depth, h, center=True).back(cut_depth/2) - cylinder(r=d, h=h, yaw=deg(90), center=True).rotateZ(deg(180+90))
-	cut -= box(d, d, h, center=True).left(cut_depth/4).back(d/2)
+	cut = box(d*2+spit_dt, cut_depth, h, center=True).back(cut_depth/2).left(spit_dt/2) - cylinder(r=d, h=h, yaw=deg(90), center=True).rotateZ(deg(180+90))
+	
+	cut -= box(d+spit_dt, d, h, center=True).left(cut_depth/4 + spit_dt/2).back(d/2)
 	res -= cut
 
-	res -= side_compartment_base.down(side_compartment_height/2-5.37).back(side_compartment_depth/2-top_height/2).right(side_compartment_width/2 - spit_dt-d)
+	res -= side_compartment_base.down(side_compartment_height/2-5.37).back(side_compartment_depth/2-top_height/2).right(side_compartment_inner_width/2 - spit_dt-d)
+	#to_brep(res, ".\\2_top_left_inner_spacer.brep")
+	#to_brep(res.mirrorYZ(), ".\\2_top_right_inner_spacer.brep")
 	return res
 
 def get_cable_protection():
@@ -89,37 +108,43 @@ def get_top_spacer():
 	m = m.down(side_compartment_height/2)
 	top -= m
 	top -= get_top_spacer_holls()
+	#to_brep(top.mirrorXZ(), ".\\top_right_spacer.brep")
 	return top
 
 def get_shell():
 	ofs_y = (wheel_arch_width+side_compartment_depth)/2
 
-	sc = get_side_compartment()
+	sc_left = get_side_compartment(False)
+	sc_right = get_side_compartment(True)
 	top = get_top_spacer().back(top_height/2-side_compartment_depth/2)
 	top = top.up(side_compartment_height/2)
-	sc += top
+	sc_left += top
+	sc_right += top.mirrorYZ().rotateZ(deg(180))
 	spi = get_top_inner_spacer().up((side_compartment_height)/2 - 5.37)
 	spi = spi.back(top_height/2-side_compartment_depth/2)
 	d = hole_d[10]
-	sc += spi.left(side_compartment_width/2 - spit_dt-d) + spi.mirrorYZ().right(side_compartment_width/2 - spit_dt-d)
-	m = sc.back(ofs_y) + sc.rotateZ(deg(180)).forw(ofs_y)
+	spi = spi.left(side_compartment_inner_width/2 - spit_dt-d) + spi.mirrorYZ().right(side_compartment_inner_width/2 - spit_dt-d)
+	sc_left += spi
+	sc_right += spi.rotateZ(deg(180))
+	m = sc_left.back(ofs_y) + sc_right.forw(ofs_y)
 
 	m += get_upper_compartment().up((side_compartment_height+side_compartment_depth+4)/2)
-	#m += PG29.rotateZ(deg(90)).rotateX(deg(-1.5)).right((dropout_width+50*2+8)/2).forw(wheel_arch_width/2 + 50/2 + 0.4 + 1).down(side_compartment_height/2+35)
-	
-	vmu20_D1 = 25.8
-	vmu20_S1 = 39 # меньше за счёт скруглений
-	vmu20_S2 = 35
-	vmu20_y = wheel_arch_width/2 +2.5 + gap(vmu20_S2/2)
-	vmu20_y2 = wheel_arch_width/2 +side_compartment_depth - gap(vmu20_S2/2)
-	#dt_right = (dropout_width+50*2+8)/2
-	dt_right = side_compartment_width/2 - vmu20_S1/2 - 11
-	m -= cylinder(vmu20_D1/2, 12, True).rotateX(deg(-1.5)).right(dt_right).forw(vmu20_y).down(side_compartment_height/2)
-	nut = ngon((vmu20_S2 * 2 / sqrt(3))/2, 6, False).extrude(10)
-	nut = nut.translate(0, -vmu20_S2/2, 0)
+
+	port_d = hole_d[20]
+	port_S1 = 41.569
+	port_S2 = 36
+
+	port_y = wheel_arch_width/2 +2.5 + gap(port_S2/2)
+	port_y2 = wheel_arch_width/2 +side_compartment_depth - gap(port_S2/2)
+	dt_right = side_compartment_width/2 - port_S1/2 - 11
+	m -= cylinder(port_d/2, 12, True).rotateX(deg(-1.5)).right(dt_right).forw(port_y).down(side_compartment_height/2)
+	'''
+	nut = ngon((port_S2 * 2 / sqrt(3))/2, 6, False).extrude(4)
+	nut = nut.translate(0, -port_S2/2, 0)
 	nut = nut.rotateX(deg(-1.5))
-	nut = nut.translate(0, vmu20_S2/2, 0)
-	m += nut.right(dt_right).forw(vmu20_y).down(side_compartment_height/2 - ((vmu20_y2-vmu20_y) * tan(deg(1.5))) - 3)
+	nut = nut.translate(0, port_S2/2, 0)
+	m += nut.right(dt_right).forw(port_y).down(side_compartment_height/2 + ((port_y2-port_y) * tan(deg(1.5))) + 3)
+	'''
 
 	m = m.up(6)
 	return m
@@ -130,7 +155,7 @@ def display_shell(alpha):
 
 def display_shell_mounts():
 	shell_height_half = (side_compartment_height) / 2
-	m = shell_mount.get_shell_mount()
+	m = sm.get_shell_mount()
 
 	sole_thick = dropout_height - dropout_sole_pos
 	sp = get_sm_spacer().up((dropout_height-sole_thick+4+4)/2)
@@ -139,11 +164,11 @@ def display_shell_mounts():
 	m += sp + spi.left((dropout_width+8+d*4)/2-d) + spi.right((dropout_width+8+d*4)/2-d)
 
 	mr = ml = m.down(shell_height_half + dropout_m_axle_pos + (dropout_height-sole_thick)/2-dropout_m_axle_pos-2)
-	ml = mr.back((wheel_arch_width+shell_mount.top_mount_depth)/2)
+	ml = mr.back((wheel_arch_width+sm.top_mount_depth)/2)
 	
 	mr = mr.rotateZ(deg(180))
-	mr += get_cable_protection().rotateZ(deg(180)).down(shell_height_half + dropout_m_axle_pos+4/2).right((cable_protection_width-dropout_width)/2).forw(-shell_mount.top_mount_depth/2 + dropout_depth+4+2)
-	mr = mr.forw((wheel_arch_width+shell_mount.top_mount_depth)/2)
+	mr += get_cable_protection().rotateZ(deg(180)).down(shell_height_half + dropout_m_axle_pos+4/2).right((cable_protection_width-dropout_width)/2).forw(-sm.top_mount_depth/2 + dropout_depth+4+2)
+	mr = mr.forw((wheel_arch_width+sm.top_mount_depth)/2)
 	display(ml + mr, color=(0.4, 0.5, 0.4, 0))#.5))
 
 def display_wheel():
@@ -255,8 +280,8 @@ def display_safety_arc():
 	#display(ribs, color=(0.3, 0.3, 0.3, 0))#.5))
 
 #display_wheel()
-#display_shell(0.5)
-display_shell(0)
+display_shell(0.5)
+#display_shell(0)
 #display_shell_mounts()
 display_safety_arc()
 show()
