@@ -4,7 +4,7 @@ from zencad import *
 import metric
 from enum import Enum
 
-common_clearance = 7
+common_clearance = 5
 batt_1p_width = 140
 batt_1p_height = 203
 batt_1p_depth = 26
@@ -18,13 +18,6 @@ tire_diameter_inch = 14
 tire_thickness_inch = 2.125
 # distance between dropauts:
 wheel_arch_width = 93
-side_compartment_width = 275
-side_compartment_inner_width = 266.91
-side_compartment_height = 175
-side_compartment_inner_depth = 62.5
-side_compartment_depth = 66.65
-side_compartment_bottom_thickness = side_compartment_top_thickness = 2.5
-side_compartment_wall_thickness = 3
 
 dropout_width = 44.8
 dropout_height = 113.6
@@ -33,6 +26,14 @@ dropout_m_axle_pos = 24.5
 dropout_p_axle_pos = 40.2
 dropout_sole_size = 51.8
 dropout_sole_pos = 88
+
+side_compartment_width = batt_1p_width + common_clearance*2 + 20*2
+side_compartment_inner_width = 266.91
+side_compartment_height = tire_diameter_inch*12.7/2 + dropout_m_axle_pos + 10#batt_1p_height
+side_compartment_inner_depth = 62.5
+side_compartment_depth = 66.65
+side_compartment_bottom_thickness = side_compartment_top_thickness = 2.5
+side_compartment_wall_thickness = 3
 
 cable_protection_width = dropout_width
 cable_protection_height = 43+5*2
