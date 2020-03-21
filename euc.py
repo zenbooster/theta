@@ -61,6 +61,30 @@ def display_shell(alpha):
     m = m.up(side_compartment_height/2 + dropout_m_axle_pos)
     m = m.back(wheel_arch_width/2 + 20 + gap_dropout_depth - 20)
     m += m.mirrorXZ()
+    
+    hv = tire_diameter_inch*12.7 + 10 + 20
+    ddt = dropout_depth - 20
+    dcdt = ddt - cover_thickness
+    rib = get_alp2020(wheel_arch_width - 40 - dcdt*2 - cover_thickness*2).rotateX(deg(90)).up(hv)
+    rib = rib.left(side_compartment_width/2 - 10)
+    rib += rib.mirrorYZ()
+    rib2 = get_alp2020(wheel_arch_width + ddt*2).rotateX(deg(90)).up(hv)
+    rib2 = rib2.left(side_compartment_width/2 - 10)
+    rib2 += rib2.mirrorYZ()
+    rib2 = rib2.up(10+dropout_m_axle_pos - hv + side_compartment_height - 20)
+    m += rib + rib2
+    guide = get_alp2020(side_compartment_width).rotateY(deg(90))
+    guide = guide.up(hv)
+    guide = guide.back(wheel_arch_width/2 - 10 + dcdt)
+    guide += guide.mirrorXZ()
+    m += guide
+    
+    hv -= dropout_m_axle_pos - 10
+    inner_cover = box(side_compartment_width, hv, cover_thickness, center = True).rotateX(deg(90))
+    inner_cover = inner_cover.back(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
+    inner_cover = inner_cover.up(hv/2 + dropout_m_axle_pos)
+    inner_cover += inner_cover.mirrorXZ()
+    m += inner_cover
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
