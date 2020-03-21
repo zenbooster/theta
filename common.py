@@ -28,8 +28,8 @@ dropout_sole_size = 51.8
 dropout_sole_pos = 88
 
 side_compartment_width = batt_1p_width + common_clearance*2 + 20*2
-side_compartment_inner_width = 266.91
-side_compartment_height = tire_diameter_inch*12.7/2 + dropout_m_axle_pos + 10#batt_1p_height
+side_compartment_inner_width = side_compartment_width - 20*2
+side_compartment_height = tire_diameter_inch*12.7 - dropout_m_axle_pos + 20 + 20 + batt_2p_height + 2 * common_clearance
 side_compartment_inner_depth = 62.5
 side_compartment_depth = 66.65
 side_compartment_bottom_thickness = side_compartment_top_thickness = 2.5
