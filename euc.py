@@ -7,7 +7,7 @@ from common import *
 import mcm5dropout
 
 alp2020l = from_brep('.\\brep\\alp2020l.brep')
-alp2040l = from_brep('.\\brep\\alp2040l.brep')
+alp2040l = from_brep('.\\brep\\alp2040l.brep').left(10)
 con2020d = from_brep('.\\brep\\con2020d.brep')
 con2020 = from_brep('.\\brep\\con2020.brep').left(10).down(6.25).rotateY(deg(-90)).rotateX(deg(180))
 con4040s = from_brep('.\\brep\\con4040s.brep').down((38.5-3.7)/2).rotateX(deg(90)).left(38.5/2).down(38.5/2)
@@ -49,20 +49,18 @@ def get_upper_compartment():
 '''
 
 def display_shell(alpha):
-    m = get_alp2040(side_compartment_width).rotateY(deg(90)).rotateX(deg(-90))
-    m = m.up(dropout_m_axle_pos + 10)
-
-    h = side_compartment_height - 20*2
-    m += m.up(h + 20)
-    m1 = get_alp2040(h).rotateZ(deg(-90))
-    m1 = m1.up(dropout_m_axle_pos + 20 + h/2)
-    
-    m += m1.left(side_compartment_width/2-10)
-    m += m1.right(side_compartment_width/2-10)
-    con = con4040s.back(38/4).up(dropout_m_axle_pos + 20 + 38.5/2)
+    mv = get_alp2040(side_compartment_height - 20*2).rotateZ(deg(90))
+    mh = get_alp2040(side_compartment_width).rotateZ(deg(90)).rotateY(deg(90)).down(side_compartment_height/2 - 10)
+    m = mv.left(side_compartment_width/2 - 10) + mh
+    con = con4040s.down(side_compartment_height/2 - 20 - 38.5/2)
     con = con.left(side_compartment_inner_width/2 - 38.5/2)
+    con += con.mirrorYZ()
     m += con
-    #m = m.back(wheel_arch_width/2 + 20 + gap_dropout_depth - 20 - 10)
+    m += m.rotateY(deg(180))
+    
+    m = m.up(side_compartment_height/2 + dropout_m_axle_pos)
+    m = m.back(wheel_arch_width/2 + 20 + gap_dropout_depth - 20)
+    m += m.mirrorXZ()
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
@@ -86,12 +84,13 @@ def display_shell_mounts():
     m += con.left(dt)
     m += con.right(dt)
 
-    con = get_con2020().rotateZ(deg(-90))#con2020d.rotateX(deg(180)).up(h/2-10+2).rotateZ(deg(-90))
+    con = get_con2020().rotateZ(deg(-90))
     con = con.up(h/2-10)
     m += con.left(gap_dropout_width/2+20)
     m += con.rotateZ(deg(180)).right(gap_dropout_width/2+20)
     m = m.down(h/2 - dropout_m_axle_pos)
     m = m.back(wheel_arch_width/2 + gap_dropout_depth - 10)
+    m += m.mirrorXZ()
     display(m)
 
 def display_wheel():
@@ -115,8 +114,8 @@ def display_wheel():
         dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
         color=(0.4, 0.4, 0.4, 0.0))
 
-#display_wheel()
-#display_shell_mounts()
+display_wheel()
+display_shell_mounts()
 #display_shell(0.5)
 display_shell(0)
 
