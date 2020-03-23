@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #coding: utf-8
 
-from math import sqrt, tan
+from math import sqrt, tan, ceil
 import metric
 from common import *
 import mcm5dropout
@@ -63,7 +63,7 @@ def display_shell(alpha):
     m += con
     m += m.rotateY(deg(180))
     
-    m = m.up(side_compartment_height/2 + dropout_m_axle_pos)
+    m = m.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     m = m.back(wheel_arch_width/2 + 20 + gap_dropout_depth - 20)
     m += m.mirrorXZ()
     
@@ -75,7 +75,7 @@ def display_shell(alpha):
     rib2 = get_alp2020(wheel_arch_width + ddt*2).rotateX(deg(90)).up(hv)
     rib2 = rib2.left(side_compartment_width/2 - 10)
     rib2 += rib2.mirrorYZ()
-    rib2 = rib2.up(10+dropout_m_axle_pos - hv + side_compartment_height - 20)
+    rib2 = rib2.up(10+dropout_m_axle_pos - hv + side_compartment_height)
     m += rib + rib2
     guide = get_alp2020(side_compartment_width).rotateY(deg(90))
     guide = guide.up(hv)
@@ -83,16 +83,13 @@ def display_shell(alpha):
     guide += guide.mirrorXZ()
     m += guide
     
-    h = hv - dropout_m_axle_pos + 10
+    h = hv - dropout_m_axle_pos + 10 - 20
     inner_cover = box(side_compartment_width, h, cover_thickness, center = True).rotateX(deg(90))
     inner_cover = inner_cover.back(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
-    inner_cover = inner_cover.up(h/2 + dropout_m_axle_pos)
+    inner_cover = inner_cover.up(h/2 + dropout_m_axle_pos + 20)
     inner_cover += inner_cover.mirrorXZ()
     m += inner_cover
-    '''
-    con = con2040.up(hv+17.4/2).left(side_compartment_inner_width/2 - 38.1/2)
-    con = con.back(wheel_arch_width/2 - 20 - 38.1/2 - dcdt).up(5)
-    '''
+
     con = con2020d.rotateY(deg(90)).up(hv).left(side_compartment_inner_width/2 - 18/2).back(wheel_arch_width/2 - 20 - 18/2 + dcdt)
     con += con.mirrorXZ()
     con += con.mirrorYZ()
@@ -118,7 +115,7 @@ def get_con2020():
     return con2020
 
 def display_shell_mounts():
-    h = gap_dropout_sole_pos - 4
+    h = gap_dropout_sole_pos - 4 + 20
     m = get_alp2020(h)
     m = m.left(gap_dropout_width/2+10) + m.right(gap_dropout_width/2+10)
 
@@ -133,7 +130,8 @@ def display_shell_mounts():
     con = con.up(h/2-10)
     m += con.left(gap_dropout_width/2+20)
     m += con.rotateZ(deg(180)).right(gap_dropout_width/2+20)
-    m = m.down(h/2 - dropout_m_axle_pos)
+    m += get_alp2020(dropout_width).rotateY(deg(90)).up(h / 2 - 10)
+    m = m.down(h/2 - dropout_m_axle_pos - 20)
     m = m.back(wheel_arch_width/2 + gap_dropout_depth - 10)
     m += m.mirrorXZ()
     display(m)
@@ -159,22 +157,53 @@ def display_wheel():
         dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
         color=(0.4, 0.4, 0.4, 0.0))
 
-#display_wheel()
+display_wheel()
 display_shell_mounts()
 #display_shell(0.5)
 display_shell(0)
 
+kgap = 4
 len2040v = side_compartment_height - 20*2
 len2040h = side_compartment_width
 print("2040:\n4 x {}\n4 x {}\n".format(len2040v, len2040h))
-len_gap = 0
-len2040 = (len2040v + len_gap) * 4 + (len2040h + len_gap) * 4
-print("length of 2040 = {}\n".format(len2040))
+len2040 = len2040v * 4 + len2040h * 4
+len_gap = 8*kgap
+len2040_gap = ceil(len2040 + len_gap)
+
+k2040weight = 0.57
+k2040cost = 240
+cost2040 = k2040cost * len2040_gap / 1000
+weight2040 = k2040weight * len2040 / 1000
+
+print("length of 2040 = {}\nwith gap = {}\ncost = {}".format(len2040, len2040_gap, cost2040))
 
 len2020v = (gap_dropout_sole_pos - 4)
 len2020h_rib = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
-print("2020:\n4 x {}\n2 x {}\n".format(len2020v, len2020h_rib))
-len2020 = len2020v*4 + len2020h_rib*2
-print("length of 2020 = {}\n".format(len2020))
+len2020h_rib2 = wheel_arch_width + ddt*2
+len2020_guid = side_compartment_width
+len2020_drw = dropout_width
+print("2020:\n4 x {}\n2 x {}\n2 x {}\n2 x {}\n2 x {}\n".format(len2020v, len2020h_rib, len2020h_rib2, len2020_guid, len2020_drw))
+len2020 = len2020v * 4 + len2020h_rib * 2 + len2020h_rib2 * 2 + len2020_guid * 2 + len2020_drw * 2
+len_gap = (4 + 2 + 2 + 2 + 2)*kgap
+len2020_gap = ceil(len2020 + len_gap)
+
+k2020weight = 0.33
+k2020cost = 134
+cost2020 = k2020cost * len2020_gap / 1000
+weight2020 = k2020weight * len2020 / 1000
+
+print("length of 2020 = {}\nwith gap = {}\ncost = {}".format(len2020, len2020_gap, cost2020))
+
+cost = cost2040 + cost2020
+weight = weight2040 + weight2020
+print("total:\ncost = {}\nweight = {}\n".format(cost, weight))
+
+m = box(batt_2p_width, batt_2p_height, batt_2p_depth, center = True)
+m = m.up(dropout_m_axle_pos + 20 + side_compartment_height - batt_2p_depth / 2 - common_clearance)
+m1 = box(batt_1p_width, batt_1p_depth, batt_1p_height, center = True)
+m1 = m1.up(dropout_m_axle_pos + 20 + 20 + 2 + common_clearance + batt_1p_height / 2)
+m1 = m1.back(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
+m += m1
+display(m, color = (0, 0, 1, 0.5))
 
 show()
