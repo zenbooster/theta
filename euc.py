@@ -14,6 +14,9 @@ con2020 = from_brep('.\\brep\\con2020.brep').left(10).down(6.25).rotateY(deg(-90
 #con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2)#.rotateZ(deg(-90))
 con4040s = from_brep('.\\brep\\con4040s.brep').down((38.5-3.7)/2).rotateX(deg(90)).left(38.5/2).down(38.5/2)
 
+ddt = dropout_depth - 20
+dcdt = ddt - cover_thickness
+
 gap_dropout_width = gap(dropout_width, 2)
 gap_dropout_height = gap(dropout_height)
 gap_dropout_depth = gap(dropout_depth)
@@ -65,8 +68,6 @@ def display_shell(alpha):
     m += m.mirrorXZ()
     
     hv = tire_diameter_inch*12.7 + 10 + 20
-    ddt = dropout_depth - 20
-    dcdt = ddt - cover_thickness
     htop = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
     rib = get_alp2020(htop).rotateX(deg(90)).up(hv)
     rib = rib.left(side_compartment_width/2 - 10)
