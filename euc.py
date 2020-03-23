@@ -10,6 +10,8 @@ alp2020l = from_brep('.\\brep\\alp2020l.brep')
 alp2040l = from_brep('.\\brep\\alp2040l.brep').left(10)
 con2020d = from_brep('.\\brep\\con2020d.brep')
 con2020 = from_brep('.\\brep\\con2020.brep').left(10).down(6.25).rotateY(deg(-90)).rotateX(deg(180))
+#con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2).rotateX(deg(90)).rotateZ(deg(-90)).rotateX(deg(-90))
+#con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2)#.rotateZ(deg(-90))
 con4040s = from_brep('.\\brep\\con4040s.brep').down((38.5-3.7)/2).rotateX(deg(90)).left(38.5/2).down(38.5/2)
 
 gap_dropout_width = gap(dropout_width, 2)
@@ -65,7 +67,8 @@ def display_shell(alpha):
     hv = tire_diameter_inch*12.7 + 10 + 20
     ddt = dropout_depth - 20
     dcdt = ddt - cover_thickness
-    rib = get_alp2020(wheel_arch_width - 40 - dcdt*2 - cover_thickness*2).rotateX(deg(90)).up(hv)
+    htop = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
+    rib = get_alp2020(htop).rotateX(deg(90)).up(hv)
     rib = rib.left(side_compartment_width/2 - 10)
     rib += rib.mirrorYZ()
     rib2 = get_alp2020(wheel_arch_width + ddt*2).rotateX(deg(90)).up(hv)
@@ -79,12 +82,29 @@ def display_shell(alpha):
     guide += guide.mirrorXZ()
     m += guide
     
-    hv -= dropout_m_axle_pos - 10
-    inner_cover = box(side_compartment_width, hv, cover_thickness, center = True).rotateX(deg(90))
+    h = hv - dropout_m_axle_pos + 10
+    inner_cover = box(side_compartment_width, h, cover_thickness, center = True).rotateX(deg(90))
     inner_cover = inner_cover.back(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
-    inner_cover = inner_cover.up(hv/2 + dropout_m_axle_pos)
+    inner_cover = inner_cover.up(h/2 + dropout_m_axle_pos)
     inner_cover += inner_cover.mirrorXZ()
     m += inner_cover
+    '''
+    con = con2040.up(hv+17.4/2).left(side_compartment_inner_width/2 - 38.1/2)
+    con = con.back(wheel_arch_width/2 - 20 - 38.1/2 - dcdt).up(5)
+    '''
+    con = con2020d.rotateY(deg(90)).up(hv).left(side_compartment_inner_width/2 - 18/2).back(wheel_arch_width/2 - 20 - 18/2 + dcdt)
+    con += con.mirrorXZ()
+    con += con.mirrorYZ()
+    m += con
+    
+    con = con2020.rotateX(deg(90)).up(hv-10 - cover_thickness).left(side_compartment_width/2 - 17/2).back(wheel_arch_width/2 - 20/2 + dcdt)
+    con += con.mirrorXZ()
+    con += con.mirrorYZ()
+    m += con
+    
+    inner_cover = box(side_compartment_width, htop + 20*2, cover_thickness, center = True).up(hv - 10 - cover_thickness/2)
+    m += inner_cover
+    
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
@@ -138,9 +158,22 @@ def display_wheel():
         dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
         color=(0.4, 0.4, 0.4, 0.0))
 
-display_wheel()
+#display_wheel()
 display_shell_mounts()
 #display_shell(0.5)
 display_shell(0)
+
+len2040v = side_compartment_height - 20*2
+len2040h = side_compartment_width
+print("2040:\n4 x {}\n4 x {}\n".format(len2040v, len2040h))
+len_gap = 0
+len2040 = (len2040v + len_gap) * 4 + (len2040h + len_gap) * 4
+print("length of 2040 = {}\n".format(len2040))
+
+len2020v = (gap_dropout_sole_pos - 4)
+len2020h_rib = = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
+print("2020:\n4 x {}\n2 x {}\n".format(len2020v, len2020h_rib))
+len2020 = len2020v*4 + len2020h_rib*2
+print("length of 2020 = {}\n".format(len2020))
 
 show()
