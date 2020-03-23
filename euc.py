@@ -171,7 +171,7 @@ len2040 = (len2040v + len_gap) * 4 + (len2040h + len_gap) * 4
 print("length of 2040 = {}\n".format(len2040))
 
 len2020v = (gap_dropout_sole_pos - 4)
-len2020h_rib = = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
+len2020h_rib = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
 print("2020:\n4 x {}\n2 x {}\n".format(len2020v, len2020h_rib))
 len2020 = len2020v*4 + len2020h_rib*2
 print("length of 2020 = {}\n".format(len2020))
