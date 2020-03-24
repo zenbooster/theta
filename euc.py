@@ -117,22 +117,35 @@ def get_con2020():
     return con2020
 
 def display_shell_mounts():
-    h = gap_dropout_sole_pos - 4 + 20
+    h = gap_dropout_sole_pos - 4
     m = get_alp2020(h)
     m = m.left(gap_dropout_width/2+10) + m.right(gap_dropout_width/2+10)
+    m = m.down(20)
 
+    '''
     con = get_con2020()
     con = con.up(h/2-10)
     con = con.back(10)
     dt = gap_dropout_width/2+17/2 + (20-17)/2
     m += con.left(dt)
     m += con.right(dt)
-
+    '''
     con = get_con2020().rotateZ(deg(-90))
     con = con.up(h/2-10)
     m += con.left(gap_dropout_width/2+20)
     m += con.rotateZ(deg(180)).right(gap_dropout_width/2+20)
-    m += get_alp2020(dropout_width).rotateY(deg(90)).up(h / 2 - 10)
+    m += get_alp2020(dropout_width + 20*2).rotateY(deg(90)).up(h / 2 - 10)
+
+    dt_holes_back = 0
+    sole_thick = gap_dropout_height - gap_dropout_sole_pos    
+    cov = box(dropout_width + 20*2, cover_thickness, h + 20, center=True).down(-10)
+    cov -= mcm5dropout.get_dropout_holes(HoleType.fasteners).up(gap_dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dt_holes_back)
+    cov -= cylinder(gap(mcm5dropout.wheel_axle_big_d/2), 4, True).rotateX(deg(90)).back(dt_holes_back).up((gap_dropout_height-sole_thick-4)/2-dropout_m_axle_pos)
+    
+    #cov -= 
+    cov = cov.down(10+10).back(10 + cover_thickness/2)
+    m += cov
+
     m = m.down(h/2 - dropout_m_axle_pos - 20)
     m = m.back(wheel_arch_width/2 + gap_dropout_depth - 10)
     m += m.mirrorXZ()
