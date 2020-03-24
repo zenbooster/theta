@@ -138,11 +138,19 @@ def display_shell_mounts():
 
     dt_holes_back = 0
     sole_thick = gap_dropout_height - gap_dropout_sole_pos    
-    cov = box(dropout_width + 20*2, cover_thickness, h + 20, center=True).down(-10)
+    cov = box(dropout_width + 20*2, cover_thickness, h + 20, center=True)
+    
+    d = hole_tap_d[5]
+    n = cylinder(d/2, nut_m5_len, True).rotateX(deg(90))
+    holes = n.up((h+20)/2 - 10).left((dropout_width+20*2)/2 - 10)
+    holes += holes.mirrorYZ()
+    holes += holes.mirrorXY()
+    cov -= holes
+
+    cov = cov.down(-10)
     cov -= mcm5dropout.get_dropout_holes(HoleType.fasteners).up(gap_dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dt_holes_back)
     cov -= cylinder(gap(mcm5dropout.wheel_axle_big_d/2), 4, True).rotateX(deg(90)).back(dt_holes_back).up((gap_dropout_height-sole_thick-4)/2-dropout_m_axle_pos)
-    
-    #cov -= 
+
     cov = cov.down(10+10).back(10 + cover_thickness/2)
     m += cov
 
