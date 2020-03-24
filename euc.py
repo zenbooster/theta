@@ -12,9 +12,10 @@ alp2040l = from_brep('.\\brep\\alp2040l.brep').left(10)
 con2020d = from_brep('.\\brep\\con2020d.brep')
 con2020 = from_brep('.\\brep\\con2020.brep').left(10).down(6.25).rotateY(deg(-90)).rotateX(deg(180))
 #con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2).rotateX(deg(90)).rotateZ(deg(-90)).rotateX(deg(-90))
-#con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2)#.rotateZ(deg(-90))
+con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2)#.rotateZ(deg(-90))
 con2040s = from_brep('.\\brep\\con2040s.brep').down(18/2 - 2).left(38.5/2).back(38.5/2).rotateX(deg(90)).rotateY(deg(180))
 con4040s = from_brep('.\\brep\\con4040s.brep').down((38.5-3.7)/2).rotateX(deg(90)).left(38.5/2).down(38.5/2)
+#cub3 = from_brep('.\\brep\\cub3.brep').down(10).rotateX(deg(180))
 
 ddt = dropout_depth - 20
 dcdt = ddt - cover_thickness
@@ -24,8 +25,16 @@ gap_dropout_height = gap(dropout_height)
 gap_dropout_depth = gap(dropout_depth)
 gap_dropout_sole_pos = gap(dropout_sole_pos)
 
+len2020v = (gap_dropout_sole_pos - 4)
+len2020h_rib = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
+len2020h_rib2 = wheel_arch_width + ddt*2
+len2020_guid = side_compartment_width
+len2020_drw = dropout_width + 20*2
+
+
 def display_shell(alpha):
     mv = get_alp2040(side_compartment_height - 20*2).rotateZ(deg(90))
+    #mh = get_alp2040(side_compartment_width - 20*2).rotateZ(deg(90)).rotateY(deg(90)).down(side_compartment_height/2 - 10)
     mh = get_alp2040(side_compartment_width).rotateZ(deg(90)).rotateY(deg(90)).down(side_compartment_height/2 - 10)
     m = mv.left(side_compartment_width/2 - 10) + mh
     con = con4040s.down(side_compartment_height/2 - 20 - 38.5/2)
@@ -34,21 +43,23 @@ def display_shell(alpha):
     m += con
     m += m.rotateY(deg(180))
     
+    #m += cub3.up(side_compartment_height/2-10).left(side_compartment_width/2 - 10).forw(10)
+    
     m = m.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     m = m.back(wheel_arch_width/2 + 20 + gap_dropout_depth - 20)
     m += m.mirrorXZ()
     
     hv = tire_diameter_inch*12.7 + 10 + 20
-    htop = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
+    htop = len2020h_rib
     rib = get_alp2020(htop).rotateX(deg(90)).up(hv)
     rib = rib.left(side_compartment_width/2 - 10)
     rib += rib.mirrorYZ()
-    rib2 = get_alp2020(wheel_arch_width + ddt*2).rotateX(deg(90)).up(hv)
+    rib2 = get_alp2020(len2020h_rib2).rotateX(deg(90)).up(hv)
     rib2 = rib2.left(side_compartment_width/2 - 10)
     rib2 += rib2.mirrorYZ()
     rib2 = rib2.up(10+dropout_m_axle_pos - hv + side_compartment_height)
     m += rib + rib2
-    guide = get_alp2020(side_compartment_width).rotateY(deg(90))
+    guide = get_alp2020(len2020_guid).rotateY(deg(90))
     guide = guide.up(hv)
     guide = guide.back(wheel_arch_width/2 - 10 + dcdt)
     guide += guide.mirrorXZ()
@@ -73,7 +84,6 @@ def display_shell(alpha):
     
     inner_cover = box(side_compartment_width, htop + 20*2, cover_thickness, center = True).up(hv - 10 - cover_thickness/2)
     m += inner_cover
-    
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
@@ -87,7 +97,7 @@ def get_con2020():
     return con2020
 
 def display_shell_mounts():
-    h = gap_dropout_sole_pos - 4
+    h = len2020v
     m = get_alp2020(h)
     m = m.left(gap_dropout_width/2+10) + m.right(gap_dropout_width/2+10)
     m = m.down(20)
@@ -100,7 +110,7 @@ def display_shell_mounts():
     con = conl + conr
     con = con.up(h/2-38.5/2)
     m += con
-    m += get_alp2020(dropout_width + 20*2).rotateY(deg(90)).up(h / 2 - 10)
+    m += get_alp2020(len2020_drw).rotateY(deg(90)).up(h / 2 - 10)
 
     dt_holes_back = 0
     sole_thick = gap_dropout_height - gap_dropout_sole_pos    
@@ -173,6 +183,8 @@ display_wheel()
 display_shell_mounts()
 #display_shell(0.5)
 display_shell(0)
+#m = cub3.down(10).rotateX(deg(180))
+#display(m)
 
 kgap = 4
 len2040v = side_compartment_height - 20*2
@@ -182,25 +194,20 @@ len2040 = len2040v * 4 + len2040h * 4
 len_gap = 8*kgap
 len2040_gap = ceil(len2040 + len_gap)
 
-k2040weight = 0.57
-k2040cost = 240
+k2040weight = 0.8
+k2040cost = 410
 cost2040 = k2040cost * len2040_gap / 1000
 weight2040 = k2040weight * len2040 / 1000
 
 print("length of 2040 = {}\nwith gap = {}\ncost = {}".format(len2040, len2040_gap, cost2040))
 
-len2020v = (gap_dropout_sole_pos - 4)
-len2020h_rib = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
-len2020h_rib2 = wheel_arch_width + ddt*2
-len2020_guid = side_compartment_width
-len2020_drw = dropout_width
 print("2020:\n4 x {}\n2 x {}\n2 x {}\n2 x {}\n2 x {}\n".format(len2020v, len2020h_rib, len2020h_rib2, len2020_guid, len2020_drw))
 len2020 = len2020v * 4 + len2020h_rib * 2 + len2020h_rib2 * 2 + len2020_guid * 2 + len2020_drw * 2
 len_gap = (4 + 2 + 2 + 2 + 2)*kgap
 len2020_gap = ceil(len2020 + len_gap)
 
-k2020weight = 0.33
-k2020cost = 134
+k2020weight = 0.45
+k2020cost = 195
 cost2020 = k2020cost * len2020_gap / 1000
 weight2020 = k2020weight * len2020 / 1000
 
