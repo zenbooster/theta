@@ -8,7 +8,8 @@ import mcm5dropout
 
 #alp2020l = from_brep('.\\brep\\alp2020l.brep')
 alp2020l = from_brep('.\\brep\\alp2020almk.brep').left(47.4).back(75.2)
-alp2040l = from_brep('.\\brep\\alp2040l.brep').left(10)
+#alp2040l = from_brep('.\\brep\\alp2040l.brep').left(10)
+alp2040l = from_brep('.\\brep\\alp2040almk.brep').back(81.55).left(37.25)
 con2020d = from_brep('.\\brep\\con2020d.brep')
 con2020 = from_brep('.\\brep\\con2020.brep').left(10).down(6.25).rotateY(deg(-90)).rotateX(deg(180))
 #con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2).rotateX(deg(90)).rotateZ(deg(-90)).rotateX(deg(-90))
@@ -103,7 +104,8 @@ def get_alp2020(len):
     return alp2020l.scaleZ(len / 100).up(len / 2)
 
 def get_alp2040(len):
-    return alp2040l.scaleZ(len / 1000).up(len / 2)
+    #return alp2040l.scaleZ(len / 1000).up(len / 2)
+    return alp2040l.scaleZ(len / 100).up(len / 2)
     
 def get_con2020():
     return con2020
@@ -188,14 +190,11 @@ def display_wheel():
         dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
         color=(0.4, 0.4, 0.4, 0.0))
 
-#display(get_alp2020(50))
-#show()
-#exit()
 display_wheel()
 display_shell_mounts()
 #display_shell(0.5)
 display_shell(0)
-#m = cub3.down(10).rotateX(deg(180))
+#m = get_alp2040(100)
 #display(m)
 
 kgap = 4
@@ -209,7 +208,7 @@ len2040_gap = ceil(len2040 + len_gap)
 k2040weight = 0.8
 k2040cost = 410
 cost2040 = k2040cost * len2040_gap / 1000
-weight2040 = k2040weight * len2040 / 1000
+weight2040 = k2040weight * len2040
 
 print("length of 2040 = {}\nwith gap = {}\ncost = {}".format(len2040, len2040_gap, cost2040))
 
@@ -221,12 +220,19 @@ len2020_gap = ceil(len2020 + len_gap)
 k2020weight = 0.45
 k2020cost = 195
 cost2020 = k2020cost * len2020_gap / 1000
-weight2020 = k2020weight * len2020 / 1000
+weight2020 = k2020weight * len2020
 
 print("length of 2020 = {}\nwith gap = {}\ncost = {}".format(len2020, len2020_gap, cost2020))
 
 cost = cost2040 + cost2020
 weight = weight2040 + weight2020
+wgtCBS5 = 2+3+1+1 # сухарь, болт, шайба, гровер
+wgtCBS4 = 2+2+1+1
+weight += (33 + 8*wgtCBS5)*8 # уголки 40x40
+weight += (9 + 4*wgtCBS5)*8 # уголки 20x40
+weight += (9 + 2*wgtCBS4)*4 # уголки 20x20 с фикс.
+weight += (7 + 2*wgtCBS5)*4 # уголки 20x20
+weight /= 1000
 print("total:\ncost = {}\nweight = {}\n".format(cost, weight))
 
 m = box(batt_2p_width, batt_2p_height, batt_2p_depth, center = True)
