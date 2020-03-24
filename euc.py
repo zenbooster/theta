@@ -144,7 +144,7 @@ def display_shell_mounts():
     n = cylinder(d/2, nut_m5_len, True).rotateX(deg(90))
     holes = n.up((h+20)/2 - 10).left((dropout_width+20*2)/2 - 10)
     holes += holes.mirrorYZ()
-    holes += holes.mirrorXY()
+    holes += holes.down(20) + holes.mirrorXY()
     cov -= holes
 
     cov = cov.down(-10)
