@@ -6,7 +6,8 @@ import metric
 from common import *
 import mcm5dropout
 
-alp2020l = from_brep('.\\brep\\alp2020l.brep')
+#alp2020l = from_brep('.\\brep\\alp2020l.brep')
+alp2020l = from_brep('.\\brep\\alp2020almk.brep').left(47.4).back(75.2)
 alp2040l = from_brep('.\\brep\\alp2040l.brep').left(10)
 con2020d = from_brep('.\\brep\\con2020d.brep')
 con2020 = from_brep('.\\brep\\con2020.brep').left(10).down(6.25).rotateY(deg(-90)).rotateX(deg(180))
@@ -106,7 +107,8 @@ def display_shell(alpha):
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
-    return alp2020l.scaleZ(len / 1000).up(len / 2)
+    #return alp2020l.scaleZ(len / 1000).up(len / 2)
+    return alp2020l.scaleZ(len / 100).up(len / 2)
 
 def get_alp2040(len):
     return alp2040l.scaleZ(len / 1000).up(len / 2)
@@ -157,6 +159,9 @@ def display_wheel():
         dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
         color=(0.4, 0.4, 0.4, 0.0))
 
+#display(get_alp2020(50))
+#show()
+#exit()
 display_wheel()
 display_shell_mounts()
 #display_shell(0.5)
