@@ -84,6 +84,18 @@ def display_shell(alpha):
     
     inner_cover = box(side_compartment_width, htop + 20*2, cover_thickness, center = True).up(hv - 10 - cover_thickness/2)
     m += inner_cover
+    
+    #con = con2040.rotateY(deg(90)).rotateZ(deg(180)).rotateX(deg(180)).up(hv + 10 + 38.1/2).left(side_compartment_width/2 - 17.4/2)
+    con = con2040.rotateX(deg(180)).rotateZ(deg(90)).up(dropout_m_axle_pos + side_compartment_height + 20 - 17.4/2).left(side_compartment_inner_width/2 - 38.1/2)
+    con = con.back(len2020h_rib2 / 2 - 38.1/2)
+    con += con.mirrorYZ()
+    con += con.mirrorXZ()
+    m += con
+    con = con2040.rotateY(deg(90)).up(dropout_m_axle_pos + side_compartment_height - 38.1/2).left(side_compartment_width/2 - 17.4/2)
+    con = con.back(len2020h_rib2 / 2 - 38.1/2)
+    con += con.mirrorYZ()
+    con += con.mirrorXZ()
+    m += con
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
