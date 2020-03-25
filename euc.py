@@ -69,6 +69,14 @@ def display_shell(alpha):
     
     h = hv - dropout_m_axle_pos + 10 - 20
     inner_cover = box(side_compartment_width, h, cover_thickness, center = True).rotateX(deg(90))
+    hole = cylinder(hole_d[5]/2, cover_thickness, True).rotateX(deg(90))
+    holes = hole.up(h/2 - 10).left(side_compartment_width/2 - 10)
+    holes += holes.mirrorYZ()
+    holes += holes.down(20 + cover_thickness)
+    holes += hole.up(h/2 - 10)
+    holes += holes.mirrorXY()
+    holes += hole.left(side_compartment_width/2 - 10) + hole.right(side_compartment_width/2 - 10)
+    inner_cover -= holes
     inner_cover = inner_cover.back(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
     inner_cover = inner_cover.up(h/2 + dropout_m_axle_pos + 20)
     inner_cover += inner_cover.mirrorXZ()
@@ -79,7 +87,8 @@ def display_shell(alpha):
     con += con.mirrorYZ()
     m += con
     
-    con = con2020.rotateX(deg(90)).up(hv-10 - cover_thickness).left(side_compartment_width/2 - 17/2).back(wheel_arch_width/2 - 20/2 + dcdt)
+    #con = con2020.rotateX(deg(90)).up(hv-10 - cover_thickness).left(side_compartment_width/2 - 17/2).back(wheel_arch_width/2 - 20/2 + dcdt)
+    con = con2020.rotateX(deg(90)).up(hv-10 - cover_thickness).left(side_compartment_width/2 - 20/2).back(wheel_arch_width/2 - 20/2 + dcdt)
     con += con.mirrorXZ()
     con += con.mirrorYZ()
     m += con
@@ -159,7 +168,8 @@ def display_shell_mounts():
     cov -= mcm5dropout.get_dropout_holes(HoleType.fasteners).up(gap_dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dt_holes_back)
     cov -= cylinder(gap(mcm5dropout.wheel_axle_big_d/2), 4, True).rotateX(deg(90)).back(dt_holes_back).up((gap_dropout_height-sole_thick-4)/2-dropout_m_axle_pos)
 
-    #to_stl(cov, "smcov.stl", 0.1)
+    #to_brep(cov.rotateX(deg(-90)), "smcov.brep")
+    #to_brep(cov, "smcov_0.brep")
 
     cov = cov.down(10+10).back(10 + cover_thickness/2)
     #m += cov
