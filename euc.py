@@ -68,7 +68,7 @@ def display_shell(alpha):
     m += guide
     
     h = hv - dropout_m_axle_pos + 10 - 20
-    inner_cover = box(side_compartment_width, h, cover_thickness, center = True).rotateX(deg(90))
+    icl = box(side_compartment_width, h, cover_thickness, center = True).rotateX(deg(90))
     hole = cylinder(hole_d[5]/2, cover_thickness, True).rotateX(deg(90))
     holes = hole.up(h/2 - 10).left(side_compartment_width/2 - 10)
     holes += holes.mirrorYZ()
@@ -76,8 +76,12 @@ def display_shell(alpha):
     holes += hole.up(h/2 - 10)
     holes += holes.mirrorXY()
     holes += hole.left(side_compartment_width/2 - 10) + hole.right(side_compartment_width/2 - 10)
-    inner_cover -= holes
-    icl = icr = inner_cover
+    icl -= holes
+    
+    hicr = 20 + common_clearance + ctrl_height
+    icr = box(side_compartment_width, hicr, cover_thickness, center = True).rotateX(deg(90))
+    icr = icr.up((hicr - h)/2)
+    icr -= holes
     icl = icl.back(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
     icr = icr.forw(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
     icl = icl.up(h/2 + dropout_m_axle_pos + 20)
@@ -265,7 +269,7 @@ print("dmns_shell_mount_cover: {}".format(dmns_shell_mount_cover))
 display(m, color = (0, 0, 1, 0.5))
 
 m = box(ctrl_width, ctrl_depth, ctrl_height, center = True)
-m = m.up(dropout_m_axle_pos + 20 + 20 + 2 + common_clearance + ctrl_height / 2)
+m = m.up(dropout_m_axle_pos + 20 + 20 + common_clearance + ctrl_height / 2)
 m = m.forw(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
 display(m, color = (0, 0.5, 0, 0.5))
 
