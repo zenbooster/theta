@@ -18,16 +18,16 @@ con2040s = from_brep('.\\brep\\con2040s.brep').down(18/2 - 2).left(38.5/2).back(
 con4040s = from_brep('.\\brep\\con4040s.brep').down((38.5-3.7)/2).rotateX(deg(90)).left(38.5/2).down(38.5/2)
 #cub3 = from_brep('.\\brep\\cub3.brep').down(10).rotateX(deg(180))
 
-ddt = dropout_depth - 20
-dcdt = ddt - cover_thickness
-
 gap_dropout_width = gap(dropout_width, 2)
 gap_dropout_height = gap(dropout_height)
 gap_dropout_depth = gap(dropout_depth)
 gap_dropout_sole_pos = gap(dropout_sole_pos)
 
+ddt = gap_dropout_depth - 20
+dcdt = ddt - cover_thickness
+
 len2020v = (gap_dropout_sole_pos - 4)
-len2020h_rib = wheel_arch_width - 40 - dcdt*2 - cover_thickness*2
+len2020h_rib = wheel_arch_width - 40 + dcdt*2# - cover_thickness*2
 len2020h_rib2 = wheel_arch_width + ddt*2
 len2020_guid = side_compartment_width
 len2020_drw = dropout_width + 20*2
@@ -48,7 +48,7 @@ def display_shell(alpha):
     #m += cub3.up(side_compartment_height/2-10).left(side_compartment_width/2 - 10).forw(10)
     
     m = m.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
-    m = m.back(wheel_arch_width/2 + 20 + gap_dropout_depth - 20)
+    m = m.back(wheel_arch_width/2 + 20 + ddt)
     m += m.mirrorXZ()
     
     hv = tire_diameter_inch*12.7 + 10 + 20
@@ -82,8 +82,8 @@ def display_shell(alpha):
     icr = box(side_compartment_width, hicr, cover_thickness, center = True).rotateX(deg(90))
     icr = icr.up((hicr - h)/2)
     icr -= holes
-    icl = icl.back(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
-    icr = icr.forw(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
+    icl = icl.back(wheel_arch_width/2 - cover_thickness/2 + ddt)
+    icr = icr.forw(wheel_arch_width/2 - cover_thickness/2 + ddt)
     icl = icl.up(h/2 + dropout_m_axle_pos + 20)
     icr = icr.up(h/2 + dropout_m_axle_pos + 20)
     #inner_cover += inner_cover.mirrorXZ()
@@ -101,7 +101,15 @@ def display_shell(alpha):
     con += con.mirrorYZ()
     m += con
     
-    inner_cover = box(side_compartment_width, htop + 20*2, cover_thickness, center = True).up(hv - 10 - cover_thickness/2)
+    hitc = htop + 20*2
+    inner_cover = box(side_compartment_width, hitc, cover_thickness, center = True)
+    hole = cylinder(hole_d[5]/2, cover_thickness, True)
+    holes = hole.forw(hitc/2 - 10).left(side_compartment_width/2 - 10)
+    holes += holes.mirrorYZ()
+    holes += hole.forw(hitc/2 - 10)
+    holes += holes.mirrorXZ()
+    inner_cover -= holes
+    inner_cover = inner_cover.up(hv - 10 - cover_thickness/2)
     m += inner_cover
     
     #con = con2040.rotateY(deg(90)).rotateZ(deg(180)).rotateX(deg(180)).up(hv + 10 + 38.1/2).left(side_compartment_width/2 - 17.4/2)
@@ -213,7 +221,7 @@ def display_wheel():
         dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
         color=(0.4, 0.4, 0.4, 0.0))
 
-display_wheel()
+#display_wheel()
 display_shell_mounts()
 #display_shell(0.5)
 display_shell(0)
