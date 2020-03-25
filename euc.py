@@ -77,9 +77,13 @@ def display_shell(alpha):
     holes += holes.mirrorXY()
     holes += hole.left(side_compartment_width/2 - 10) + hole.right(side_compartment_width/2 - 10)
     inner_cover -= holes
-    inner_cover = inner_cover.back(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
-    inner_cover = inner_cover.up(h/2 + dropout_m_axle_pos + 20)
-    inner_cover += inner_cover.mirrorXZ()
+    icl = icr = inner_cover
+    icl = icl.back(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
+    icr = icr.forw(wheel_arch_width/2 - cover_thickness/2 + dropout_depth - 20)
+    icl = icl.up(h/2 + dropout_m_axle_pos + 20)
+    icr = icr.up(h/2 + dropout_m_axle_pos + 20)
+    #inner_cover += inner_cover.mirrorXZ()
+    inner_cover = icl + icr
     m += inner_cover
 
     con = con2020d.rotateY(deg(90)).up(hv).left(side_compartment_inner_width/2 - 18/2).back(wheel_arch_width/2 - 20 - 18/2 + dcdt)
@@ -259,5 +263,10 @@ m += m1
 
 print("dmns_shell_mount_cover: {}".format(dmns_shell_mount_cover))
 display(m, color = (0, 0, 1, 0.5))
+
+m = box(ctrl_width, ctrl_depth, ctrl_height, center = True)
+m = m.up(dropout_m_axle_pos + 20 + 20 + 2 + common_clearance + ctrl_height / 2)
+m = m.forw(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
+display(m, color = (0, 0.5, 0, 0.5))
 
 show()
