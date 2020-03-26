@@ -118,6 +118,7 @@ def display_shell(alpha):
     holes2 += holes2.mirrorXZ()
     holes += holes2
     inner_cover -= holes
+    to_brep(inner_cover, "vector/ict.brep")
     inner_cover = inner_cover.up(hv - 10 - cover_thickness/2)
     m += inner_cover
     
