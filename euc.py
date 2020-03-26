@@ -108,6 +108,10 @@ def display_shell(alpha):
     holes += holes.mirrorYZ()
     holes += hole.forw(hitc/2 - 10)
     holes += holes.mirrorXZ()
+    holes2 = hole.forw(hitc/2-10-20).left(side_compartment_width/2 - 10)
+    holes2 += holes2.mirrorYZ()
+    holes2 += holes2.mirrorXZ()
+    holes += holes2
     inner_cover -= holes
     inner_cover = inner_cover.up(hv - 10 - cover_thickness/2)
     m += inner_cover
@@ -184,7 +188,7 @@ def display_shell_mounts():
     cov -= mcm5dropout.get_dropout_holes(HoleType.fasteners).up(gap_dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dt_holes_back)
     cov -= cylinder(gap(mcm5dropout.wheel_axle_big_d/2), 4, True).rotateX(deg(90)).back(dt_holes_back).up((gap_dropout_height-sole_thick-4)/2-dropout_m_axle_pos)
 
-    #to_brep(cov.rotateX(deg(-90)), "smcov.brep")
+    to_brep(cov.rotateX(deg(-90)), "vector/smcov.brep")
     #to_brep(cov, "smcov_0.brep")
 
     cov = cov.down(10+10).back(10 + cover_thickness/2)
