@@ -133,6 +133,23 @@ def display_shell(alpha):
     con += con.mirrorYZ()
     con += con.mirrorXZ()
     m += con
+    
+    outer_cover = box(side_compartment_width, side_compartment_height, cover_thickness, center = True).rotateX(deg(90))
+    hole = hole.rotateX(deg(90))
+    hup = hole.up(side_compartment_height/2 - 10)
+    t = hole.left(side_compartment_width/2 - 10)
+    t += t.mirrorYZ()
+    holes = t.up(side_compartment_height/2 - 10)
+    holes += t.up(side_compartment_height/2 - 30)
+    holes += hup
+    holes += holes.mirrorXY()
+    holes += t
+    outer_cover -= holes
+
+    outer_cover = outer_cover.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
+    outer_cover = outer_cover.back(wheel_arch_width/2 + 40 + cover_thickness/2 + ddt)
+    outer_cover += outer_cover.mirrorXZ()
+    m += outer_cover
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
