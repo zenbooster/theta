@@ -118,7 +118,7 @@ def display_shell(alpha):
     holes2 += holes2.mirrorXZ()
     holes += holes2
     inner_cover -= holes
-    to_brep(inner_cover, "vector/ict.brep")
+    #to_brep(inner_cover, "vector/ict.brep")
     inner_cover = inner_cover.up(hv - 10 - cover_thickness/2)
     m += inner_cover
     
@@ -149,6 +149,22 @@ def display_shell(alpha):
     outer_cover = outer_cover.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     outer_cover = outer_cover.back(wheel_arch_width/2 + 40 + cover_thickness/2 + ddt)
     outer_cover += outer_cover.mirrorXZ()
+    m += outer_cover
+
+    hotc = htop + 40*2
+    outer_cover = box(side_compartment_width, hotc, cover_thickness, center = True)
+    hole = cylinder(hole_d[5]/2, cover_thickness, True)
+    holes = hole.forw(hotc/2 - 10).left(side_compartment_width/2 - 10)
+    holes += holes.mirrorYZ()
+    holes += hole.forw(hotc/2 - 10)
+    holes += holes.mirrorXZ()
+    holes2 = hole.forw(hotc/2-10-20).left(side_compartment_width/2 - 10)
+    holes2 += holes2.mirrorYZ()
+    holes2 += holes2.mirrorXZ()
+    holes += holes2
+    outer_cover -= holes
+    #to_brep(outer_cover, "vector/ict.brep")
+    outer_cover = outer_cover.up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness/2)
     m += outer_cover
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
