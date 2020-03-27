@@ -180,18 +180,29 @@ def display_shell(alpha):
     cut += cut.mirrorYZ()
     front_cover -= cut
     
-    cut_width = 20
-    cut_height = front_height-40
-    cut = box(20, cover_thickness, cut_height, center=True).up(front_height/2 - 40 - cut_height/2)
+    cut_width = 20 + cover_thickness
+    cut_height = front_height-40 + cover_thickness
+    cut = box(cut_width, cover_thickness, cut_height, center=True).up(front_height/2 - 40 - cut_height/2)
     cut = cut.left(front_width/2 - cut_width/2)
     cut += cut.mirrorYZ()
     front_cover -= cut
     #
+    hole = hole.rotateX(deg(90))
+    holes = hole.up(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 10)
+    holes += hole.up(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 50)
+    holes += hole.up(front_height/2 - cover_thickness - 30).left(front_width/2 - cover_thickness - 10)
+    holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 30)
+    holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness*2 - 50)
+    holes += holes.mirrorYZ()
+    front_cover -= holes
+
     front_cover = front_cover.rotateZ(deg(90))
     front_cover = front_cover.left(side_compartment_width/2 + cover_thickness/2)
     front_cover = front_cover.up(hv - 10 + front_height/2 - cover_thickness)
     front_cover += front_cover.mirrorYZ()
     m += front_cover
+    
+    #m += get_alp2020(side_compartment_width).rotateY(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2)
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
