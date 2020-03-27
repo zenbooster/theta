@@ -169,6 +169,13 @@ def display_shell(alpha):
     #to_brep(outer_cover, "vector/ict.brep")
     outer_cover = outer_cover.up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness/2)
     m += outer_cover
+    
+    front_width = wheel_arch_width + 2*ddt + 2*40 + 2*cover_thickness
+    front_height = batt_2p_depth + 2 * common_clearance + 20 + 2*cover_thickness
+    front_cover = box(front_width, cover_thickness, front_height, center=True).rotateZ(deg(90))
+    front_cover = front_cover.left(side_compartment_width/2 + cover_thickness/2)
+    front_cover = front_cover.up(hv - 10 + front_height/2 - cover_thickness)
+    m += front_cover
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
