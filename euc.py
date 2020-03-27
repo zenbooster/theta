@@ -162,6 +162,9 @@ def display_shell(alpha):
     holes2 += holes2.mirrorYZ()
     holes2 += holes2.mirrorXZ()
     holes += holes2
+    holes2 = hole.left(side_compartment_width/2 - 10)
+    holes2 += holes2.mirrorYZ()
+    holes += holes2
     outer_cover -= holes
     #to_brep(outer_cover, "vector/ict.brep")
     outer_cover = outer_cover.up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness/2)
