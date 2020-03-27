@@ -151,7 +151,7 @@ def display_shell(alpha):
     outer_cover += outer_cover.mirrorXZ()
     m += outer_cover
 
-    hotc = htop + 40*2
+    hotc = htop + 40*2 + ddt*2
     outer_cover = box(side_compartment_width, hotc, cover_thickness, center = True)
     hole = cylinder(hole_d[5]/2, cover_thickness, True)
     holes = hole.forw(hotc/2 - 10).left(side_compartment_width/2 - 10)
@@ -172,9 +172,25 @@ def display_shell(alpha):
     
     front_width = wheel_arch_width + 2*ddt + 2*40 + 2*cover_thickness
     front_height = batt_2p_depth + 2 * common_clearance + 20 + 2*cover_thickness
-    front_cover = box(front_width, cover_thickness, front_height, center=True).rotateZ(deg(90))
+    front_cover = box(front_width, cover_thickness, front_height, center=True)
+    #
+    cut_width = 20 + cover_thickness
+    cut = box(cut_width, cover_thickness, cover_thickness, center=True).up(front_height/2 - cover_thickness/2)
+    cut = cut.left(front_width/2 - cut_width/2)
+    cut += cut.mirrorYZ()
+    front_cover -= cut
+    
+    cut_width = 20
+    cut_height = front_height-40
+    cut = box(20, cover_thickness, cut_height, center=True).up(front_height/2 - 40 - cut_height/2)
+    cut = cut.left(front_width/2 - cut_width/2)
+    cut += cut.mirrorYZ()
+    front_cover -= cut
+    #
+    front_cover = front_cover.rotateZ(deg(90))
     front_cover = front_cover.left(side_compartment_width/2 + cover_thickness/2)
     front_cover = front_cover.up(hv - 10 + front_height/2 - cover_thickness)
+    front_cover += front_cover.mirrorYZ()
     m += front_cover
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
@@ -273,7 +289,7 @@ def display_wheel():
         dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
         color=(0.4, 0.4, 0.4, 0.0))
 
-#display_wheel()
+display_wheel()
 display_shell_mounts()
 #display_shell(0.5)
 display_shell(0)
