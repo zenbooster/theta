@@ -51,6 +51,7 @@ class HoleType(Enum):
 	fasteners = 3
 
 hole_d = {
+    3:  3.2,
 	5:	5.3,
 	10:	10.5,
 	20: 21,

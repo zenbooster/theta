@@ -32,6 +32,11 @@ len2020h_rib2 = wheel_arch_width + ddt*2
 len2020_guid = side_compartment_width
 len2020_drw = dropout_width + 20*2
 
+h_rib = tire_diameter_inch*12.7 + 10 + 20
+h_icl = h_rib - dropout_m_axle_pos + 10 - 20
+h_icr = 20 + common_clearance + ctrl_height
+h_icr += 8 - (h_icr-h_icl-18.3)*2 # 8 - размер опорной поверхности под М3.
+
 dmns_shell_mount_cover = (dropout_width + 20*2, cover_thickness, len2020v + 20)
 
 def display_shell(alpha):
@@ -50,62 +55,70 @@ def display_shell(alpha):
     m = m.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     m = m.back(wheel_arch_width/2 + 20 + ddt)
     m += m.mirrorXZ()
-    
-    hv = tire_diameter_inch*12.7 + 10 + 20
+
     htop = len2020h_rib
-    rib = get_alp2020(htop).rotateX(deg(90)).up(hv)
+    rib = get_alp2020(htop).rotateX(deg(90)).up(h_rib)
     rib = rib.left(side_compartment_width/2 - 10)
     rib += rib.mirrorYZ()
-    rib2 = get_alp2020(len2020h_rib2).rotateX(deg(90)).up(hv)
+    rib2 = get_alp2020(len2020h_rib2).rotateX(deg(90)).up(h_rib)
     rib2 = rib2.left(side_compartment_width/2 - 10)
     rib2 += rib2.mirrorYZ()
-    rib2 = rib2.up(10+dropout_m_axle_pos - hv + side_compartment_height)
+    rib2 = rib2.up(10+dropout_m_axle_pos - h_rib + side_compartment_height)
     m += rib + rib2
     guide = get_alp2020(len2020_guid).rotateY(deg(90))
-    guide = guide.up(hv)
+    guide = guide.up(h_rib)
     guide = guide.back(wheel_arch_width/2 - 10 + dcdt)
     guide += guide.mirrorXZ()
     m += guide
     
-    h = hv - dropout_m_axle_pos + 10 - 20
-    icl = box(side_compartment_width, h, cover_thickness, center = True).rotateX(deg(90))
+    # внутренние боковые крышки
+    icl = box(side_compartment_width, h_icl, cover_thickness, center = True).rotateX(deg(90))
     hole = cylinder(hole_d[5]/2, cover_thickness, True).rotateX(deg(90))
-    holes = hole.up(h/2 - 10).left(side_compartment_width/2 - 10)
+    holes = hole.up(h_icl/2 - 10).left(side_compartment_width/2 - 10)
     holes += holes.mirrorYZ()
     holes += holes.down(20 + cover_thickness)
     holes += holes.mirrorXY()
-    holes += holes + hole.down(h/2 - 10)
+    holes += holes + hole.down(h_icl/2 - 10)
     holes += hole.left(side_compartment_width/2 - 10) + hole.right(side_compartment_width/2 - 10)
-    t = hole.up(h/2 - 10)
+    t = hole.up(h_icl/2 - 10)
     holes_l = holes + t
     t = t.left(ctrl_width/2 + gap(11.8/2)) # 11.8 - самый большой диаметр шляпки винта М5, что удалось на вскидку найти...
     holes_r = holes + t + t.mirrorYZ()
+
     icl -= holes_l
     #to_brep(icl.rotateX(deg(90)), "vector/icl.brep")
-    
-    hicr = 20 + common_clearance + ctrl_height
-    icr = box(side_compartment_width, hicr, cover_thickness, center = True).rotateX(deg(90))
-    icr = icr.up((hicr - h)/2)
+
+    icr = box(side_compartment_width, h_icr, cover_thickness, center = True).rotateX(deg(90))
+    # отверстия крепления контроллера
+    hole_m3 = cylinder(hole_d[3]/2, cover_thickness, True).rotateX(deg(90))
+    #hole_m3 = cylinder(7/2, cover_thickness, True).rotateX(deg(90))
+    holes_ctrl = hole_m3.up(h_icr/2 - 18.3)
+    holes_ctrl += hole_m3.up(h_icr/2 - 18.3 - 140.3)
+    holes_ctrl = holes_ctrl.left(78.7 / 2)
+    holes_ctrl += holes_ctrl.mirrorYZ()
+    icr -= holes_ctrl
+    icr = icr.up((h_icr - h_icl)/2)
     icr -= holes_r
     icl = icl.back(wheel_arch_width/2 - cover_thickness/2 + ddt)
     icr = icr.forw(wheel_arch_width/2 - cover_thickness/2 + ddt)
-    icl = icl.up(h/2 + dropout_m_axle_pos + 20)
-    icr = icr.up(h/2 + dropout_m_axle_pos + 20)
+    icl = icl.up(h_icl/2 + dropout_m_axle_pos + 20)
+    icr = icr.up(h_icl/2 + dropout_m_axle_pos + 20)
     #inner_cover += inner_cover.mirrorXZ()
     inner_cover = icl + icr
     m += inner_cover
 
-    con = con2020d.rotateY(deg(90)).up(hv).left(side_compartment_inner_width/2 - 18/2).back(wheel_arch_width/2 - 20 - 18/2 + dcdt)
+    con = con2020d.rotateY(deg(90)).up(h_rib).left(side_compartment_inner_width/2 - 18/2).back(wheel_arch_width/2 - 20 - 18/2 + dcdt)
     con += con.mirrorXZ()
     con += con.mirrorYZ()
     m += con
     
-    #con = con2020.rotateX(deg(90)).up(hv-10 - cover_thickness).left(side_compartment_width/2 - 17/2).back(wheel_arch_width/2 - 20/2 + dcdt)
-    con = con2020.rotateX(deg(90)).up(hv-10 - cover_thickness).left(side_compartment_width/2 - 20/2).back(wheel_arch_width/2 - 20/2 + dcdt)
+    #con = con2020.rotateX(deg(90)).up(h_rib-10 - cover_thickness).left(side_compartment_width/2 - 17/2).back(wheel_arch_width/2 - 20/2 + dcdt)
+    con = con2020.rotateX(deg(90)).up(h_rib-10 - cover_thickness).left(side_compartment_width/2 - 20/2).back(wheel_arch_width/2 - 20/2 + dcdt)
     con += con.mirrorXZ()
     con += con.mirrorYZ()
     m += con
     
+    # внутренняя верхняя крышка
     hitc = htop + 20*2
     inner_cover = box(side_compartment_width, hitc, cover_thickness, center = True)
     hole = cylinder(hole_d[5]/2, cover_thickness, True)
@@ -119,10 +132,9 @@ def display_shell(alpha):
     holes += holes2
     inner_cover -= holes
     #to_brep(inner_cover, "vector/ict.brep")
-    inner_cover = inner_cover.up(hv - 10 - cover_thickness/2)
+    inner_cover = inner_cover.up(h_rib - 10 - cover_thickness/2)
     m += inner_cover
     
-    #con = con2040.rotateY(deg(90)).rotateZ(deg(180)).rotateX(deg(180)).up(hv + 10 + 38.1/2).left(side_compartment_width/2 - 17.4/2)
     con = con2040.rotateX(deg(180)).rotateZ(deg(90)).up(dropout_m_axle_pos + side_compartment_height + 20 - 17.4/2).left(side_compartment_inner_width/2 - 38.1/2)
     con = con.back(len2020h_rib2 / 2 - 38.1/2)
     con += con.mirrorYZ()
@@ -134,6 +146,7 @@ def display_shell(alpha):
     con += con.mirrorXZ()
     m += con
     
+    # внешние боковые крышки
     outer_cover = box(side_compartment_width, side_compartment_height, cover_thickness, center = True).rotateX(deg(90))
     hole = hole.rotateX(deg(90))
     hup = hole.up(side_compartment_height/2 - 10)
@@ -149,8 +162,9 @@ def display_shell(alpha):
     outer_cover = outer_cover.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     outer_cover = outer_cover.back(wheel_arch_width/2 + 40 + cover_thickness/2 + ddt)
     outer_cover += outer_cover.mirrorXZ()
-    m += outer_cover
+    #m += outer_cover
 
+    # внешняя верхняя крышка
     hotc = htop + 40*2 + ddt*2
     outer_cover = box(side_compartment_width, hotc, cover_thickness, center = True)
     hole = cylinder(hole_d[5]/2, cover_thickness, True)
@@ -198,7 +212,7 @@ def display_shell(alpha):
 
     front_cover = front_cover.rotateZ(deg(90))
     front_cover = front_cover.left(side_compartment_width/2 + cover_thickness/2)
-    front_cover = front_cover.up(hv - 10 + front_height/2 - cover_thickness)
+    front_cover = front_cover.up(h_rib - 10 + front_height/2 - cover_thickness)
     front_cover += front_cover.mirrorYZ()
     m += front_cover
     
@@ -356,7 +370,8 @@ print("dmns_shell_mount_cover: {}".format(dmns_shell_mount_cover))
 display(m, color = (0, 0, 1, 0.5))
 
 m = box(ctrl_width, ctrl_depth, ctrl_height, center = True)
-m = m.up(dropout_m_axle_pos + 20 + 20 + common_clearance + ctrl_height / 2)
+#m = m.up(dropout_m_axle_pos + 20 + 20 + common_clearance + ctrl_height / 2)
+m = m.up(dropout_m_axle_pos + 20 + h_icr - ctrl_height / 2)
 m = m.forw(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
 display(m, color = (0, 0.5, 0, 0.5))
 
