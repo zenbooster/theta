@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #coding: utf-8
 
+import sys
 from math import sqrt, tan, ceil
 import metric
 from common import *
@@ -17,6 +18,8 @@ con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17
 con2040s = from_brep('.\\brep\\con2040s.brep').down(18/2 - 2).left(38.5/2).back(38.5/2).rotateX(deg(90)).rotateY(deg(180))
 con4040s = from_brep('.\\brep\\con4040s.brep').down((38.5-3.7)/2).rotateX(deg(90)).left(38.5/2).down(38.5/2)
 #cub3 = from_brep('.\\brep\\cub3.brep').down(10).rotateX(deg(180))
+gx16 = from_brep('.\\brep\\GX16-4.brep').rotateX(deg(90)).rotateZ(deg(90))
+power_button = from_brep('.\\brep\\PV2F640xx.brep').rotateX(deg(90)).down(12)
 
 gap_dropout_width = gap(dropout_width, 2)
 gap_dropout_height = gap(dropout_height)
@@ -134,7 +137,7 @@ def display_shell(alpha):
     #to_brep(inner_cover, "vector/ict.brep")
     inner_cover = inner_cover.up(h_rib - 10 - cover_thickness/2)
     m += inner_cover
-    
+    '''
     con = con2040.rotateX(deg(180)).rotateZ(deg(90)).up(dropout_m_axle_pos + side_compartment_height + 20 - 17.4/2).left(side_compartment_inner_width/2 - 38.1/2)
     con = con.back(len2020h_rib2 / 2 - 38.1/2)
     con += con.mirrorYZ()
@@ -145,6 +148,7 @@ def display_shell(alpha):
     con += con.mirrorYZ()
     con += con.mirrorXZ()
     m += con
+    '''
     
     # внешние боковые крышки
     outer_cover = box(side_compartment_width, side_compartment_height, cover_thickness, center = True).rotateX(deg(90))
@@ -179,8 +183,25 @@ def display_shell(alpha):
     holes2 = hole.left(side_compartment_width/2 - 10)
     holes2 += holes2.mirrorYZ()
     holes += holes2
+    hole_btn = cylinder(16/2, cover_thickness, True)
+    
+    dtc = 32.2 / 2 + common_clearance#9/2 + 18/2
+    holes += hole_btn.forw(10 + dtc).left(side_compartment_width/2 - 20 - dtc) + hole_btn.forw(10 + dtc).right(side_compartment_width/2 - 20 - dtc)
+    hole_gx16 = hole_btn
+    cut = box(16, (16-14.6)/2, cover_thickness, center=True).back(16/2 - (16-14.6)/4)
+    cut += cut.mirrorXZ()
+    hole_gx16 -= cut
+    holes += hole_gx16.back(10 + dtc).left(side_compartment_width/2 - 20 - dtc)
+    
+    hole_usb = cylinder(25.2/2, cover_thickness, True)
+    cut = box(25.2, (25.2-24.5)/2, cover_thickness, center=True).back(25.2/2 - (25.2-24.5)/4)
+    cut += cut.mirrorXZ()
+    hole_usb -= cut
+    holes += hole_usb.back(10 + dtc).right(side_compartment_width/2 - 20 - dtc)#.back(10 + 32.2/4 + 32.2/2).right(side_compartment_width/2 - 20 - 32.2/4 - 32.2/2)
     outer_cover -= holes
     #to_brep(outer_cover, "vector/ict.brep")
+    outer_cover += power_button.forw(10 + dtc).left(side_compartment_width/2 - 20 - dtc) + power_button.forw(10 + dtc).right(side_compartment_width/2 - 20 - dtc)
+    outer_cover += gx16.back(10 + dtc).left(side_compartment_width/2 - 20 - dtc)
     outer_cover = outer_cover.up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness/2)
     m += outer_cover
     
@@ -216,7 +237,7 @@ def display_shell(alpha):
     front_cover += front_cover.mirrorYZ()
     m += front_cover
     
-    #m += get_alp2020(side_compartment_width).rotateY(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2)
+    m += get_alp2020(side_compartment_width - 40).rotateY(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2)
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
