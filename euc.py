@@ -167,7 +167,7 @@ def display_shell(alpha):
     outer_cover = outer_cover.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     outer_cover = outer_cover.back(wheel_arch_width/2 + 40 + cover_thickness/2 + ddt)
     outer_cover += outer_cover.mirrorXZ()
-    #m += outer_cover
+    m += outer_cover # боковые крышки
 
     # внешняя верхняя крышка
     hotc = htop + 40*2 + ddt*2
@@ -240,6 +240,9 @@ def display_shell(alpha):
     m += front_cover
     
     m += get_alp2020(side_compartment_width - 40).rotateY(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2)
+    con = con2020.rotateX(deg(180)).rotateZ(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2).left((side_compartment_width)/2 - 20)
+    con += con.mirrorYZ()
+    m += con
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
