@@ -37,6 +37,7 @@ len2020_guid = side_compartment_width
 len2020_drw = dropout_width + 20*2
 
 h_rib = tire_diameter_inch*12.7 + 10 + 20
+h_rib2 = h_rib + 10+dropout_m_axle_pos - h_rib + side_compartment_height
 h_icl = h_rib - dropout_m_axle_pos + 10 - 20
 h_icr = 20 + common_clearance + ctrl_height
 h_icr += 8 - (h_icr-h_icl-18.3)*2 # 8 - размер опорной поверхности под М3.
@@ -64,10 +65,10 @@ def display_shell(alpha):
     rib = get_alp2020(htop).rotateX(deg(90)).up(h_rib)
     rib = rib.left(side_compartment_width/2 - 10)
     rib += rib.mirrorYZ()
-    rib2 = get_alp2020(len2020h_rib2).rotateX(deg(90)).up(h_rib)
+    rib2 = get_alp2020(len2020h_rib2).rotateX(deg(90)).up(h_rib2)
     rib2 = rib2.left(side_compartment_width/2 - 10)
     rib2 += rib2.mirrorYZ()
-    rib2 = rib2.up(10+dropout_m_axle_pos - h_rib + side_compartment_height)
+    #rib2 = rib2.up(10+dropout_m_axle_pos - h_rib + side_compartment_height)
     m += rib + rib2
     guide = get_alp2020(len2020_guid).rotateY(deg(90))
     guide = guide.up(h_rib)
@@ -122,6 +123,11 @@ def display_shell(alpha):
     con += con.mirrorYZ()
     m += con
     
+    con = con2020.rotateX(deg(90)).up(h_rib2-10).left(side_compartment_width/2 - 20/2).back(wheel_arch_width/2 - 20/2 + ddt)
+    con += con.mirrorXZ()
+    con += con.mirrorYZ()
+    m += con
+
     # внутренняя верхняя крышка
     hitc = htop + 20*2
     inner_cover = box(side_compartment_width, hitc, cover_thickness, center = True)
@@ -237,7 +243,7 @@ def display_shell(alpha):
     front_cover = front_cover.left(side_compartment_width/2 + cover_thickness/2)
     front_cover = front_cover.up(h_rib - 10 + front_height/2 - cover_thickness)
     front_cover += front_cover.mirrorYZ()
-    m += front_cover
+    #m += front_cover # торцевые крышки
     
     m += get_alp2020(side_compartment_width - 40).rotateY(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2)
     con = con2020.rotateX(deg(180)).rotateZ(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2).left((side_compartment_width)/2 - 20)
