@@ -117,7 +117,6 @@ def display_shell(alpha):
     con += con.mirrorYZ()
     m += con
     
-    #con = con2020.rotateX(deg(90)).up(h_rib-10 - cover_thickness).left(side_compartment_width/2 - 17/2).back(wheel_arch_width/2 - 20/2 + dcdt)
     con = con2020.rotateX(deg(90)).up(h_rib-10 - cover_thickness).left(side_compartment_width/2 - 20/2).back(wheel_arch_width/2 - 20/2 + dcdt)
     con += con.mirrorXZ()
     con += con.mirrorYZ()
@@ -243,7 +242,7 @@ def display_shell(alpha):
     front_cover = front_cover.left(side_compartment_width/2 + cover_thickness/2)
     front_cover = front_cover.up(h_rib - 10 + front_height/2 - cover_thickness)
     front_cover += front_cover.mirrorYZ()
-    #m += front_cover # торцевые крышки
+    m += front_cover # торцевые крышки
     
     m += get_alp2020(side_compartment_width - 40).rotateY(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2)
     con = con2020.rotateX(deg(180)).rotateZ(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2).left((side_compartment_width)/2 - 20)
