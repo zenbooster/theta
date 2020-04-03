@@ -254,7 +254,10 @@ def display_shell(alpha):
     bb_width = 40 + 2*cover_thickness
     bb_height = 40;
     butt_cover = box(bb_width, cover_thickness, bb_height, center=True)
-    #
+    holes = hole.up(bb_height/2 - 10).left(bb_width/2 - cover_thickness - 10)
+    holes += holes.mirrorYZ()
+    holes += holes.mirrorXY()
+    butt_cover -= holes
     butt_cover = butt_cover.rotateZ(deg(90))
     butt_cover = butt_cover.left(side_compartment_width/2 + cover_thickness/2)
     butt_cover = butt_cover.up(dropout_m_axle_pos + 20 + bb_height/2)
