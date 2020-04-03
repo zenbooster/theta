@@ -214,20 +214,21 @@ def display_shell(alpha):
     
     front_width = wheel_arch_width + 2*ddt + 2*40 + 2*cover_thickness
     front_height = batt_2p_depth + 2 * common_clearance + 20 + 2*cover_thickness
-    front_cover = box(front_width, cover_thickness, front_height, center=True)
+    # торцевые верхние крышки
+    butt_cover = box(front_width, cover_thickness, front_height, center=True)
     #
     cut_width = 20 + cover_thickness
     cut = box(cut_width, cover_thickness, cover_thickness, center=True).up(front_height/2 - cover_thickness/2)
     cut = cut.left(front_width/2 - cut_width/2)
     cut += cut.mirrorYZ()
-    front_cover -= cut
+    butt_cover -= cut
     
     cut_width = 20 + cover_thickness
     cut_height = front_height-40 + cover_thickness
     cut = box(cut_width, cover_thickness, cut_height, center=True).up(front_height/2 - 40 - cut_height/2)
     cut = cut.left(front_width/2 - cut_width/2)
     cut += cut.mirrorYZ()
-    front_cover -= cut
+    butt_cover -= cut
     #
     hole = hole.rotateX(deg(90))
     holes = hole.up(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 10)
@@ -236,18 +237,32 @@ def display_shell(alpha):
     holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 30)
     holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness*2 - 50)
     holes += holes.mirrorYZ()
-    front_cover -= holes
+    butt_cover -= holes
 
-    front_cover = front_cover.rotateZ(deg(90))
-    front_cover = front_cover.left(side_compartment_width/2 + cover_thickness/2)
-    front_cover = front_cover.up(h_rib - 10 + front_height/2 - cover_thickness)
-    front_cover += front_cover.mirrorYZ()
-    m += front_cover # торцевые крышки
+    butt_cover = butt_cover.rotateZ(deg(90))
+    butt_cover = butt_cover.left(side_compartment_width/2 + cover_thickness/2)
+    butt_cover = butt_cover.up(h_rib - 10 + front_height/2 - cover_thickness)
+    butt_cover += butt_cover.mirrorYZ()
+    m += butt_cover # торцевые верхние крышки
     
     m += get_alp2020(side_compartment_width - 40).rotateY(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2)
     con = con2020.rotateX(deg(180)).rotateZ(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2).left((side_compartment_width)/2 - 20)
     con += con.mirrorYZ()
     m += con
+    
+    # торцевые нижние накладки
+    bb_width = 40 + 2*cover_thickness
+    bb_height = 40;
+    butt_cover = box(bb_width, cover_thickness, bb_height, center=True)
+    #
+    butt_cover = butt_cover.rotateZ(deg(90))
+    butt_cover = butt_cover.left(side_compartment_width/2 + cover_thickness/2)
+    butt_cover = butt_cover.up(dropout_m_axle_pos + 20 + bb_height/2)
+    butt_cover = butt_cover.back(wheel_arch_width/2 + 20 + ddt)
+    butt_cover += butt_cover.mirrorXZ()
+    butt_cover += butt_cover.mirrorYZ()
+    m += butt_cover # торцевые нижние накладки
+    
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
