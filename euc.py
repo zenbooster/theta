@@ -6,6 +6,7 @@ from math import sqrt, tan, ceil
 import metric
 from common import *
 import mcm5dropout
+import usb
 
 #alp2020l = from_brep('.\\brep\\alp2020l.brep')
 alp2020l = from_brep('.\\brep\\alp2020almk.brep').left(47.4).back(75.2)
@@ -194,14 +195,15 @@ def display_shell(alpha):
     holes += hole_gx16.back(10 + dtc).left(side_compartment_width/2 - 20 - dtc)
     
     hole_usb = cylinder(25.2/2, cover_thickness, True)
-    cut = box(25.2, (25.2-24.5)/2, cover_thickness, center=True).back(25.2/2 - (25.2-24.5)/4)
-    cut += cut.mirrorXZ()
+    cut = box(25.2, 25.2-24.5, cover_thickness, center=True).back(25.2/2 - (25.2-24.5)/2)
+    cut = cut.mirrorXZ()
     hole_usb -= cut
     holes += hole_usb.back(10 + dtc).right(side_compartment_width/2 - 20 - dtc)#.back(10 + 32.2/4 + 32.2/2).right(side_compartment_width/2 - 20 - 32.2/4 - 32.2/2)
     outer_cover -= holes
     #to_brep(outer_cover, "vector/ict.brep")
     outer_cover += power_button.forw(10 + dtc).left(side_compartment_width/2 - 20 - dtc) + power_button.forw(10 + dtc).right(side_compartment_width/2 - 20 - dtc)
     outer_cover += gx16.back(10 + dtc).left(side_compartment_width/2 - 20 - dtc)
+    outer_cover += usb.get_usb().back(10 + dtc).right(side_compartment_width/2 - 20 - dtc)
     outer_cover = outer_cover.up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness/2)
     m += outer_cover
     
