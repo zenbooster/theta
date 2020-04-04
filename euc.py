@@ -21,6 +21,7 @@ con4040s = from_brep('.\\brep\\con4040s.brep').down((38.5-3.7)/2).rotateX(deg(90
 #cub3 = from_brep('.\\brep\\cub3.brep').down(10).rotateX(deg(180))
 gx16 = from_brep('.\\brep\\GX16-4.brep').rotateX(deg(90)).rotateZ(deg(90))
 power_button = from_brep('.\\brep\\PV2F640xx.brep').rotateX(deg(90)).down(12)
+handle = from_brep('.\\brep\\handle108mm.brep').rotateX(deg(90))
 
 gap_dropout_width = gap(dropout_width, 2)
 gap_dropout_height = gap(dropout_height)
@@ -266,6 +267,8 @@ def display_shell(alpha):
     butt_cover += butt_cover.mirrorYZ()
     m += butt_cover # торцевые нижние накладки
     
+    m += handle.up(dropout_m_axle_pos+20+side_compartment_height+cover_thickness+20)
+    
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
@@ -362,6 +365,11 @@ def display_wheel():
         dropout.back((wheel_arch_width+dropout_depth)/2)+\
         dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
         color=(0.4, 0.4, 0.4, 0.0))
+
+
+#display(handle.rotateX(deg(90)))
+#show()
+#sys.exit(0)
 
 display_wheel()
 display_shell_mounts()
