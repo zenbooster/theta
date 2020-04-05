@@ -92,7 +92,7 @@ def display_shell(alpha):
     holes_r = holes + t + t.mirrorYZ()
 
     icl -= holes_l
-    #to_brep(icl.rotateX(deg(90)), "vector/icl.brep")
+    #to_brep(icl.rotateX(deg(90)), "vector/1x_icl.brep")
 
     icr = box(side_compartment_width, h_icr, cover_thickness, center = True).rotateX(deg(90))
     # отверстия крепления контроллера
@@ -105,6 +105,7 @@ def display_shell(alpha):
     icr -= holes_ctrl
     icr = icr.up((h_icr - h_icl)/2)
     icr -= holes_r
+    #to_brep(icr.rotateX(deg(-90)), "vector/1x_icr.brep")
     icl = icl.back(wheel_arch_width/2 - cover_thickness/2 + ddt)
     icr = icr.forw(wheel_arch_width/2 - cover_thickness/2 + ddt)
     icl = icl.up(h_icl/2 + dropout_m_axle_pos + 20)
@@ -141,7 +142,7 @@ def display_shell(alpha):
     holes2 += holes2.mirrorXZ()
     holes += holes2
     inner_cover -= holes
-    #to_brep(inner_cover, "vector/ict.brep")
+    #to_brep(inner_cover, "vector/1x_ict.brep")
     inner_cover = inner_cover.up(h_rib - 10 - cover_thickness/2)
     m += inner_cover
     '''
@@ -169,6 +170,7 @@ def display_shell(alpha):
     holes += holes.mirrorXY()
     holes += t
     outer_cover -= holes
+    #to_brep(outer_cover.rotateX(deg(90)), "vector/2x_ocs.brep")
 
     outer_cover = outer_cover.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     outer_cover = outer_cover.back(wheel_arch_width/2 + 40 + cover_thickness/2 + ddt)
@@ -206,12 +208,12 @@ def display_shell(alpha):
     hole_usb -= cut
     holes += hole_usb.back(10 + dtc).right(side_compartment_width/2 - 20 - dtc)#.back(10 + 32.2/4 + 32.2/2).right(side_compartment_width/2 - 20 - 32.2/4 - 32.2/2)
     outer_cover -= holes
-    #to_brep(outer_cover, "vector/ict.brep")
+    #to_brep(outer_cover, "vector/1x_oct.brep")
     outer_cover += power_button.forw(10 + dtc).left(side_compartment_width/2 - 20 - dtc) + power_button.forw(10 + dtc).right(side_compartment_width/2 - 20 - dtc)
     outer_cover += gx16.back(10 + dtc).left(side_compartment_width/2 - 20 - dtc)
     outer_cover += usb.get_usb().back(10 + dtc).right(side_compartment_width/2 - 20 - dtc)
     outer_cover = outer_cover.up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness/2)
-    m += outer_cover
+    m += outer_cover # внешняя верхняя крышка
     
     front_width = wheel_arch_width + 2*ddt + 2*40 + 2*cover_thickness
     front_height = batt_2p_depth + 2 * common_clearance + 20 + 2*cover_thickness
@@ -237,8 +239,10 @@ def display_shell(alpha):
     holes += hole.up(front_height/2 - cover_thickness - 30).left(front_width/2 - cover_thickness - 10)
     holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 30)
     holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness*2 - 50)
+    holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness*2 - 70)
     holes += holes.mirrorYZ()
     butt_cover -= holes
+    #to_brep(butt_cover.rotateX(deg(-90)), "vector/2x_bct.brep")
 
     butt_cover = butt_cover.rotateZ(deg(90))
     butt_cover = butt_cover.left(side_compartment_width/2 + cover_thickness/2)
@@ -259,6 +263,7 @@ def display_shell(alpha):
     holes += holes.mirrorYZ()
     holes += holes.mirrorXY()
     butt_cover -= holes
+    #to_brep(butt_cover.rotateX(deg(-90)), "vector/4x_bcb.brep")
     butt_cover = butt_cover.rotateZ(deg(90))
     butt_cover = butt_cover.left(side_compartment_width/2 + cover_thickness/2)
     butt_cover = butt_cover.up(dropout_m_axle_pos + 20 + bb_height/2)
@@ -330,7 +335,7 @@ def display_shell_mounts():
     cov -= mcm5dropout.get_dropout_holes(HoleType.fasteners).up(gap_dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dt_holes_back)
     cov -= cylinder(gap(mcm5dropout.wheel_axle_big_d/2), 4, True).rotateX(deg(90)).back(dt_holes_back).up((gap_dropout_height-sole_thick-4)/2-dropout_m_axle_pos)
 
-    #to_brep(cov.rotateX(deg(-90)), "vector/smcov.brep")
+    #to_brep(cov.rotateX(deg(-90)), "vector/2x_smc.brep")
 
     cov = cov.down(10+10).back(10 + cover_thickness/2)
     #m += cov
