@@ -1,6 +1,6 @@
 # theta
 Простой, как паровоз, брутальный, как бронепоезд ;)
 
-![image](https://repository-images.githubusercontent.com/224591076/8dba3e00-73fb-11ea-8c16-0ae61650643e)
+[![Watch the video](https://img.youtube.com/vi/x_wpeCRDHl8/maxresdefault.jpg)](https://youtu.be/x_wpeCRDHl8)
 
 Для рамы используется экструзионный профиль 2020 и 2040.
