@@ -8,20 +8,20 @@ from common import *
 import mcm5dropout
 import usb
 
-#alp2020l = from_brep('.\\brep\\alp2020l.brep')
-alp2020l = from_brep('.\\brep\\alp2020almk.brep').left(47.4).back(75.2)
-#alp2040l = from_brep('.\\brep\\alp2040l.brep').left(10)
-alp2040l = from_brep('.\\brep\\alp2040almk.brep').back(81.55).left(37.25)
-con2020d = from_brep('.\\brep\\con2020d.brep')
-con2020 = from_brep('.\\brep\\con2020.brep').left(10).down(6.25).rotateY(deg(-90)).rotateX(deg(180))
-#con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2).rotateX(deg(90)).rotateZ(deg(-90)).rotateX(deg(-90))
-con2040 = from_brep('.\\brep\\con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2)#.rotateZ(deg(-90))
-con2040s = from_brep('.\\brep\\con2040s.brep').down(18/2 - 2).left(38.5/2).back(38.5/2).rotateX(deg(90)).rotateY(deg(180))
-con4040s = from_brep('.\\brep\\con4040s.brep').down((38.5-3.7)/2).rotateX(deg(90)).left(38.5/2).down(38.5/2)
-#cub3 = from_brep('.\\brep\\cub3.brep').down(10).rotateX(deg(180))
-gx16 = from_brep('.\\brep\\GX16-4.brep').rotateX(deg(90)).rotateZ(deg(90))
-power_button = from_brep('.\\brep\\PV2F640xx.brep').rotateX(deg(90)).down(12)
-handle = from_brep('.\\brep\\handle108mm.brep').rotateX(deg(90))
+#alp2020l = from_brep('./brep/alp2020l.brep')
+alp2020l = from_brep('./brep/alp2020almk.brep').left(47.4).back(75.2)
+#alp2040l = from_brep('./brep/alp2040l.brep').left(10)
+alp2040l = from_brep('./brep/alp2040almk.brep').back(81.55).left(37.25)
+con2020d = from_brep('./brep/con2020d.brep')
+con2020 = from_brep('./brep/con2020.brep').left(10).down(6.25).rotateY(deg(-90)).rotateX(deg(180))
+#con2040 = from_brep('./brep/con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2).rotateX(deg(90)).rotateZ(deg(-90)).rotateX(deg(-90))
+con2040 = from_brep('./brep/con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2)#.rotateZ(deg(-90))
+con2040s = from_brep('./brep/con2040s.brep').down(18/2 - 2).left(38.5/2).back(38.5/2).rotateX(deg(90)).rotateY(deg(180))
+con4040s = from_brep('./brep/con4040s.brep').down((38.5-3.7)/2).rotateX(deg(90)).left(38.5/2).down(38.5/2)
+#cub3 = from_brep('./brep/cub3.brep').down(10).rotateX(deg(180))
+gx16 = from_brep('./brep/GX16-4.brep').rotateX(deg(90)).rotateZ(deg(90))
+power_button = from_brep('./brep/PV2F640xx.brep').rotateX(deg(90)).down(12)
+handle = from_brep('./brep/handle108mm.brep').rotateX(deg(90))
 
 gap_dropout_width = gap(dropout_width, 2)
 gap_dropout_height = gap(dropout_height)
@@ -353,17 +353,17 @@ def display_shell_mounts():
 def display_wheel():
     shell_height_half = (side_compartment_height) / 2
 
-    display(torus( \
-        (tire_diameter_inch-tire_thickness_inch)*12.7, \
-        tire_thickness_inch*12.7).rotateX(deg(90)), \
-        color=(0.1, 0.1, 0.1, 0.0)\
-    )
+    #display(torus( \
+    #    (tire_diameter_inch-tire_thickness_inch)*12.7, \
+    #    tire_thickness_inch*12.7).rotateX(deg(90)), \
+    #    color=(0.1, 0.1, 0.1, 0.0)\
+    #)
 
-    display(cylinder(12, 140, center=True).rotateX(deg(90))+\
-            cylinder((tire_diameter_inch-2*tire_thickness_inch)*12.7, tire_thickness_inch*12.7, center=True)\
-                .rotateX(deg(90)), \
-            color=(0.4, 0.2, 0.2, 0.0)
-    )
+    #display(cylinder(12, 140, center=True).rotateX(deg(90))+\
+    #        cylinder((tire_diameter_inch-2*tire_thickness_inch)*12.7, tire_thickness_inch*12.7, center=True)\
+    #            .rotateX(deg(90)), \
+    #        color=(0.4, 0.2, 0.2, 0.0)
+    #)
 
     dropout = mcm5dropout.get_dropout().down(dropout_height/2 - dropout_m_axle_pos)
     display(\
@@ -377,12 +377,12 @@ def display_wheel():
 #sys.exit(0)
 
 display_wheel()
-display_shell_mounts()
-#display_shell(0.5)
-display_shell(0)
-#m = get_alp2040(100)
-#display(m)
-
+#display_shell_mounts()
+##display_shell(0.5)
+#display_shell(0)
+##m = get_alp2040(100)
+##display(m)
+'''
 kgap = 4
 len2040v = side_compartment_height - 20*2
 len2040h = side_compartment_width
@@ -435,6 +435,6 @@ m = box(ctrl_width, ctrl_depth, ctrl_height, center = True)
 #m = m.up(dropout_m_axle_pos + 20 + 20 + common_clearance + ctrl_height / 2)
 m = m.up(dropout_m_axle_pos + 20 + h_icr - ctrl_height / 2)
 m = m.forw(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
-display(m, color = (0, 0.5, 0, 0.5))
-
+#display(m, color = (0, 0.5, 0, 0.5))
+'''
 show()
