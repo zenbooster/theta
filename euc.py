@@ -12,6 +12,7 @@ import usb
 alp2020l = from_brep('./brep/alp2020almk.brep').left(47.4).back(75.2)
 #alp2040l = from_brep('./brep/alp2040l.brep').left(10)
 alp2040l = from_brep('./brep/alp2040almk.brep').back(81.55).left(37.25)
+alp4040con = from_brep('./brep/alp4040con.brep').scaleZ(0.1)
 con2020d = from_brep('./brep/con2020d.brep')
 con2020 = from_brep('./brep/con2020.brep').left(10).down(6.25).rotateY(deg(-90)).rotateX(deg(180))
 #con2040 = from_brep('./brep/con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2).rotateX(deg(90)).rotateZ(deg(-90)).rotateX(deg(-90))
@@ -53,10 +54,14 @@ def display_shell(alpha):
     con = con4040s.down(side_compartment_height/2 - 20 - 38.5/2)
     con = con.left(side_compartment_inner_width/2 - 38.5/2)
     con += con.mirrorYZ()
-    m += con
+    #m += con
+
     m += m.rotateY(deg(180))
     
     #m += cub3.up(side_compartment_height/2-10).left(side_compartment_width/2 - 10).forw(10)
+
+    #m += get_alp4040con(side_compartment_width - 2*20).rotateY(deg(90)).rotateX(deg(180)).forw(dcdt + 10).up(common_clearance + h_icr + 10 - side_compartment_height/2)
+    m += get_alp4040con(side_compartment_width - 2*20).rotateY(deg(90)).rotateX(deg(180)).forw(dcdt + 10).up(side_compartment_height/2 - 50)
     
     m = m.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     m = m.back(wheel_arch_width/2 + 20 + ddt)
@@ -175,7 +180,7 @@ def display_shell(alpha):
     outer_cover = outer_cover.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     outer_cover = outer_cover.back(wheel_arch_width/2 + 40 + cover_thickness/2 + ddt)
     outer_cover += outer_cover.mirrorXZ()
-    m += outer_cover # боковые крышки
+    #m += outer_cover # боковые крышки
 
     # внешняя верхняя крышка
     hotc = htop + 40*2 + ddt*2
@@ -277,12 +282,13 @@ def display_shell(alpha):
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
 def get_alp2020(len):
-    #return alp2020l.scaleZ(len / 1000).up(len / 2)
     return alp2020l.scaleZ(len / 100).up(len / 2)
 
 def get_alp2040(len):
-    #return alp2040l.scaleZ(len / 1000).up(len / 2)
     return alp2040l.scaleZ(len / 100).up(len / 2)
+
+def get_alp4040con(len):
+    return alp4040con.scaleZ(len / 100).up(len / 2)
     
 def get_con2020():
     return con2020
@@ -365,23 +371,25 @@ def display_wheel():
     #        color=(0.4, 0.2, 0.2, 0.0)
     #)
 
-    dropout = mcm5dropout.get_dropout().down(dropout_height/2 - dropout_m_axle_pos)
-    display(\
-        dropout.back((wheel_arch_width+dropout_depth)/2)+\
-        dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
-        color=(0.4, 0.4, 0.4, 0.0))
+    #dropout = mcm5dropout.get_dropout().down(dropout_height/2 - dropout_m_axle_pos)
+    #display(\
+    #    dropout.back((wheel_arch_width+dropout_depth)/2)+\
+    #    dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
+    #    color=(0.4, 0.4, 0.4, 0.0))
 
 
 #display(handle.rotateX(deg(90)))
 #show()
 #sys.exit(0)
 
-display_wheel()
+#display_wheel()
 #display_shell_mounts()
 ##display_shell(0.5)
-#display_shell(0)
-##m = get_alp2040(100)
-##display(m)
+display_shell(0)
+
+#m = get_alp2040(100).left(40)
+#m += get_alp4040con(100)
+#display(m)
 '''
 kgap = 4
 len2040v = side_compartment_height - 20*2
@@ -420,21 +428,23 @@ weight += (9 + 2*wgtCBS4)*4 # уголки 20x20 с фикс.
 weight += (7 + 2*wgtCBS5)*4 # уголки 20x20
 weight /= 1000
 print("total:\ncost = {}\nweight = {}\n".format(cost, weight))
-
+'''
+'''
 m = box(batt_2p_width, batt_2p_height, batt_2p_depth, center = True)
 m = m.up(dropout_m_axle_pos + 20 + side_compartment_height - batt_2p_depth / 2 - common_clearance)
 m1 = box(batt_1p_width, batt_1p_depth, batt_1p_height, center = True)
 m1 = m1.up(dropout_m_axle_pos + 20 + 20 + 2 + common_clearance + batt_1p_height / 2)
 m1 = m1.back(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
 m += m1
+'''
 
-print("dmns_shell_mount_cover: {}".format(dmns_shell_mount_cover))
-display(m, color = (0, 0, 1, 0.5))
+#print("dmns_shell_mount_cover: {}".format(dmns_shell_mount_cover))
+#display(m, color = (0, 0, 1, 0.5))
 
 m = box(ctrl_width, ctrl_depth, ctrl_height, center = True)
 #m = m.up(dropout_m_axle_pos + 20 + 20 + common_clearance + ctrl_height / 2)
 m = m.up(dropout_m_axle_pos + 20 + h_icr - ctrl_height / 2)
 m = m.forw(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
-#display(m, color = (0, 0.5, 0, 0.5))
-'''
+display(m, color = (0, 0.5, 0, 0.5))
+
 show()
