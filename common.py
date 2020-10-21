@@ -5,8 +5,8 @@ import metric
 from enum import Enum
 
 common_clearance = 5
-batt_1p_width = 140
-batt_1p_height = 203
+batt_1p_width = 203
+batt_1p_height = 140
 batt_1p_depth = 26
 batt_2p_width = 140
 batt_2p_height = 80
