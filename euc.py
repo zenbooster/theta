@@ -239,8 +239,8 @@ def display_shell(alpha):
     #
     hole = hole.rotateX(deg(90))
     holes = hole.up(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 30)
-    holes += hole.up(front_height/2 - cover_thickness - 30).left(front_width/2 - cover_thickness - 30)
-    holes += hole.up(front_height/2 - cover_thickness - 50).left(front_width/2 - cover_thickness - 30)
+    #holes += hole.up(front_height/2 - cover_thickness - 30).left(front_width/2 - cover_thickness - 30)
+    #holes += hole.up(front_height/2 - cover_thickness - 50).left(front_width/2 - cover_thickness - 30)
     holes += hole.up(front_height/2 - cover_thickness - 50).left(front_width/2 - cover_thickness - 10)
     holes += hole.up(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 50)
     holes += hole.up(front_height/2 - cover_thickness - 70).left(front_width/2 - cover_thickness - 10)
