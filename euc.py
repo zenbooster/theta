@@ -12,7 +12,6 @@ import usb
 alp2020l = from_brep('./brep/alp2020almk.brep').left(47.4).back(75.2)
 #alp2040l = from_brep('./brep/alp2040l.brep').left(10)
 alp2040l = from_brep('./brep/alp2040almk.brep').back(81.55).left(37.25)
-alp4040con = from_brep('./brep/alp4040con.brep').scaleZ(0.1)
 con2020d = from_brep('./brep/con2020d.brep')
 con2020 = from_brep('./brep/con2020.brep').left(10).down(6.25).rotateY(deg(-90)).rotateX(deg(180))
 #con2040 = from_brep('./brep/con2040d.brep').right(38.1/2).back(38.1/2).down(17.4/2).rotateX(deg(90)).rotateZ(deg(-90)).rotateX(deg(-90))
@@ -47,21 +46,20 @@ h_icr += 8 - (h_icr-h_icl-18.3)*2 # 8 - размер опорной поверх
 dmns_shell_mount_cover = (dropout_width + 20*2, cover_thickness, len2020v + 20)
 
 def display_shell(alpha):
-    mv = get_alp2040(side_compartment_height - 20*2).rotateZ(deg(90))
-    #mh = get_alp2040(side_compartment_width - 20*2).rotateZ(deg(90)).rotateY(deg(90)).down(side_compartment_height/2 - 10)
+    mv = get_alp2040(side_compartment_height - 20*2 - 40).rotateZ(deg(90))
     mh = get_alp2040(side_compartment_width).rotateZ(deg(90)).rotateY(deg(90)).down(side_compartment_height/2 - 10)
-    m = mv.left(side_compartment_width/2 - 10) + mh
+    m = mv.left(side_compartment_width/2 - 10).down(40/2)# + mh
     con = con4040s.down(side_compartment_height/2 - 20 - 38.5/2)
     con = con.left(side_compartment_inner_width/2 - 38.5/2)
     con += con.mirrorYZ()
     #m += con
 
-    m += m.rotateY(deg(180))
+    m += m.mirrorYZ()
     
-    #m += cub3.up(side_compartment_height/2-10).left(side_compartment_width/2 - 10).forw(10)
-
-    #m += get_alp4040con(side_compartment_width - 2*20).rotateY(deg(90)).rotateX(deg(180)).forw(dcdt + 10).up(common_clearance + h_icr + 10 - side_compartment_height/2)
-    m += get_alp4040con(side_compartment_width - 2*20).rotateY(deg(90)).rotateX(deg(180)).forw(dcdt + 10).up(side_compartment_height/2 - 50)
+    m += mh
+    
+    m += get_alp2040(side_compartment_width).rotateY(deg(90)).rotateX(deg(90)).forw(0).up(side_compartment_height/2 - 50)
+    m += get_alp2040(side_compartment_width).rotateY(deg(90)).rotateX(deg(0)).forw(10).up(side_compartment_height/2 - 20)
     
     m = m.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
     m = m.back(wheel_arch_width/2 + 20 + ddt)
@@ -226,22 +224,26 @@ def display_shell(alpha):
     butt_cover = box(front_width, cover_thickness, front_height, center=True)
     #
     cut_width = 20 + cover_thickness
-    cut = box(cut_width, cover_thickness, cover_thickness, center=True).up(front_height/2 - cover_thickness/2)
+    cut = box(cut_width, cover_thickness, cover_thickness + 40, center=True).up(front_height/2 - cover_thickness/2 - 40/2)
     cut = cut.left(front_width/2 - cut_width/2)
     cut += cut.mirrorYZ()
     butt_cover -= cut
     
     cut_width = 20 + cover_thickness
-    cut_height = front_height-40 + cover_thickness
-    cut = box(cut_width, cover_thickness, cut_height, center=True).up(front_height/2 - 40 - cut_height/2)
+    #cut_height = front_height-80# + cover_thickness
+    cut_height = front_height - (cover_thickness + 40) - 40
+    cut = box(cut_width, cover_thickness, cut_height, center=True).up(front_height/2 - 80 - cut_height/2 - cover_thickness)
     cut = cut.left(front_width/2 - cut_width/2)
     cut += cut.mirrorYZ()
     butt_cover -= cut
     #
     hole = hole.rotateX(deg(90))
-    holes = hole.up(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 10)
+    holes = hole.up(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 30)
+    holes += hole.up(front_height/2 - cover_thickness - 30).left(front_width/2 - cover_thickness - 30)
+    holes += hole.up(front_height/2 - cover_thickness - 50).left(front_width/2 - cover_thickness - 30)
+    holes += hole.up(front_height/2 - cover_thickness - 50).left(front_width/2 - cover_thickness - 10)
     holes += hole.up(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 50)
-    holes += hole.up(front_height/2 - cover_thickness - 30).left(front_width/2 - cover_thickness - 10)
+    holes += hole.up(front_height/2 - cover_thickness - 70).left(front_width/2 - cover_thickness - 10)
     holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness - 30)
     holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness*2 - 50)
     holes += hole.down(front_height/2 - cover_thickness - 10).left(front_width/2 - cover_thickness*2 - 70)
@@ -286,10 +288,7 @@ def get_alp2020(len):
 
 def get_alp2040(len):
     return alp2040l.scaleZ(len / 100).up(len / 2)
-
-def get_alp4040con(len):
-    return alp4040con.scaleZ(len / 100).up(len / 2)
-    
+  
 def get_con2020():
     return con2020
 
@@ -388,7 +387,6 @@ def display_wheel():
 display_shell(0)
 
 #m = get_alp2040(100).left(40)
-#m += get_alp4040con(100)
 #display(m)
 '''
 kgap = 4
