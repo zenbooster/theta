@@ -162,23 +162,24 @@ def display_shell(alpha):
     '''
     
     # внешние боковые крышки
-    outer_cover = box(side_compartment_width, side_compartment_height, cover_thickness, center = True).rotateX(deg(90))
+    scuh = side_compartment_height - 40 # useful height
+    outer_cover = box(side_compartment_width, scuh, cover_thickness, center = True).rotateX(deg(90))
     hole = hole.rotateX(deg(90))
-    hup = hole.up(side_compartment_height/2 - 10)
+    hup = hole.up(scuh/2 - 10)
     t = hole.left(side_compartment_width/2 - 10)
     t += t.mirrorYZ()
-    holes = t.up(side_compartment_height/2 - 10)
-    holes += t.up(side_compartment_height/2 - 30)
+    holes = t.up(scuh/2 - 10)
+    holes += t.up(scuh/2 - 30)
     holes += hup
     holes += holes.mirrorXY()
     holes += t
     outer_cover -= holes
     #to_brep(outer_cover.rotateX(deg(90)), "vector/2x_ocs.brep")
 
-    outer_cover = outer_cover.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
+    outer_cover = outer_cover.up(scuh/2 + dropout_m_axle_pos + 20)
     outer_cover = outer_cover.back(wheel_arch_width/2 + 40 + cover_thickness/2 + ddt)
     outer_cover += outer_cover.mirrorXZ()
-    #m += outer_cover # боковые крышки
+    m += outer_cover # боковые крышки
 
     # внешняя верхняя крышка
     hotc = htop + 40*2 + ddt*2
