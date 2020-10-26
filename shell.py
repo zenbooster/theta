@@ -35,10 +35,13 @@ top_width = side_compartment_width-5.5*2
 top_height = side_compartment_depth-5.5-23.4786
 top_depth = 4
 
+shell_dropout_m_axle_pos = dropout_m_axle_pos
+h_rib = tire_diameter_inch*12.7 + 10 + 20
+
 #cable_protection_width = dropout_width
 #cable_protection_height = 43+5*2
 #cable_protection_depth = 19-1+4
 
 # в посчитанное впихнём новое колесо:
-tire_diameter_inch = 16
+tire_diameter_inch = 14
 tire_thickness_inch = 3

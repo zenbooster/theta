@@ -38,9 +38,8 @@ len2020h_rib2 = wheel_arch_width + ddt*2
 len2020_guid = side_compartment_width
 len2020_drw = dropout_width + 20*2
 
-h_rib = tire_diameter_inch*12.7 + 10 + 20
-h_rib2 = h_rib + 10+dropout_m_axle_pos - h_rib + side_compartment_height
-h_icl = h_rib - dropout_m_axle_pos + 10 - 20
+h_rib2 = h_rib + 10+shell_dropout_m_axle_pos - h_rib + side_compartment_height
+h_icl = h_rib - shell_dropout_m_axle_pos + 10 - 20
 h_icr = 20 + common_clearance + ctrl_height
 h_icr += 8 - (h_icr-h_icl-18.3)*2 # 8 - размер опорной поверхности под М3.
 
@@ -62,7 +61,7 @@ def display_shell(alpha):
     m += get_alp2040(side_compartment_width).rotateY(deg(90)).rotateX(deg(90)).forw(0).up(side_compartment_height/2 - 50)
     m += get_alp2040(side_compartment_width).rotateY(deg(90)).rotateX(deg(0)).forw(10).up(side_compartment_height/2 - 20)
     
-    m = m.up(side_compartment_height/2 + dropout_m_axle_pos + 20)
+    m = m.up(side_compartment_height/2 + shell_dropout_m_axle_pos + 20)
     m = m.back(wheel_arch_width/2 + 20 + ddt)
     m += m.mirrorXZ()
 
@@ -73,7 +72,6 @@ def display_shell(alpha):
     rib2 = get_alp2020(len2020h_rib2).rotateX(deg(90)).up(h_rib2)
     rib2 = rib2.left(side_compartment_width/2 - 10)
     rib2 += rib2.mirrorYZ()
-    #rib2 = rib2.up(10+dropout_m_axle_pos - h_rib + side_compartment_height)
     m += rib + rib2
     guide = get_alp2020(len2020_guid).rotateY(deg(90))
     guide = guide.up(h_rib)
@@ -112,8 +110,8 @@ def display_shell(alpha):
     #to_brep(icr.rotateX(deg(-90)), "vector/1x_icr.brep")
     icl = icl.back(wheel_arch_width/2 - cover_thickness/2 + ddt)
     icr = icr.forw(wheel_arch_width/2 - cover_thickness/2 + ddt)
-    icl = icl.up(h_icl/2 + dropout_m_axle_pos + 20)
-    icr = icr.up(h_icl/2 + dropout_m_axle_pos + 20)
+    icl = icl.up(h_icl/2 + shell_dropout_m_axle_pos + 20)
+    icr = icr.up(h_icl/2 + shell_dropout_m_axle_pos + 20)
     #inner_cover += inner_cover.mirrorXZ()
     inner_cover = icl + icr
     m += inner_cover
@@ -149,18 +147,6 @@ def display_shell(alpha):
     #to_brep(inner_cover, "vector/1x_ict.brep")
     inner_cover = inner_cover.up(h_rib - 10 - cover_thickness/2)
     m += inner_cover
-    '''
-    con = con2040.rotateX(deg(180)).rotateZ(deg(90)).up(dropout_m_axle_pos + side_compartment_height + 20 - 17.4/2).left(side_compartment_inner_width/2 - 38.1/2)
-    con = con.back(len2020h_rib2 / 2 - 38.1/2)
-    con += con.mirrorYZ()
-    con += con.mirrorXZ()
-    m += con
-    con = con2040.rotateY(deg(90)).up(dropout_m_axle_pos + side_compartment_height - 38.1/2).left(side_compartment_width/2 - 17.4/2)
-    con = con.back(len2020h_rib2 / 2 - 38.1/2)
-    con += con.mirrorYZ()
-    con += con.mirrorXZ()
-    m += con
-    '''
     
     # внешние боковые крышки
     scuh = side_compartment_height - 40 # useful height
@@ -177,7 +163,7 @@ def display_shell(alpha):
     outer_cover -= holes
     #to_brep(outer_cover.rotateX(deg(90)), "vector/2x_ocs.brep")
 
-    outer_cover = outer_cover.up(scuh/2 + dropout_m_axle_pos + 20)
+    outer_cover = outer_cover.up(scuh/2 + shell_dropout_m_axle_pos + 20)
     outer_cover = outer_cover.back(wheel_arch_width/2 + 40 + cover_thickness/2 + ddt)
     outer_cover += outer_cover.mirrorXZ()
     m += outer_cover # боковые крышки
@@ -217,7 +203,7 @@ def display_shell(alpha):
     outer_cover += power_button.forw(10 + dtc).left(side_compartment_width/2 - 20 - dtc) + power_button.forw(10 + dtc).right(side_compartment_width/2 - 20 - dtc)
     outer_cover += gx16.back(10 + dtc).left(side_compartment_width/2 - 20 - dtc)
     outer_cover += usb.get_usb().back(10 + dtc).right(side_compartment_width/2 - 20 - dtc)
-    outer_cover = outer_cover.up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness/2)
+    outer_cover = outer_cover.up(shell_dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness/2)
     m += outer_cover # внешняя верхняя крышка
     
     front_width = wheel_arch_width + 2*ddt + 2*40 + 2*cover_thickness
@@ -259,8 +245,8 @@ def display_shell(alpha):
     butt_cover += butt_cover.mirrorYZ()
     m += butt_cover # торцевые верхние крышки
     
-    m += get_alp2020(side_compartment_width - 40).rotateY(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2)
-    con = con2020.rotateX(deg(180)).rotateZ(deg(90)).up(dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2).left((side_compartment_width)/2 - 20)
+    m += get_alp2020(side_compartment_width - 40).rotateY(deg(90)).up(shell_dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2)
+    con = con2020.rotateX(deg(180)).rotateZ(deg(90)).up(shell_dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness + 20/2).left((side_compartment_width)/2 - 20)
     con += con.mirrorYZ()
     m += con
     
@@ -275,13 +261,13 @@ def display_shell(alpha):
     #to_brep(butt_cover.rotateX(deg(-90)), "vector/4x_bcb.brep")
     butt_cover = butt_cover.rotateZ(deg(90))
     butt_cover = butt_cover.left(side_compartment_width/2 + cover_thickness/2)
-    butt_cover = butt_cover.up(dropout_m_axle_pos + 20 + bb_height/2)
+    butt_cover = butt_cover.up(shell_dropout_m_axle_pos + 20 + bb_height/2)
     butt_cover = butt_cover.back(wheel_arch_width/2 + 20 + ddt)
     butt_cover += butt_cover.mirrorXZ()
     butt_cover += butt_cover.mirrorYZ()
     m += butt_cover # торцевые нижние накладки
     
-    m += handle.up(dropout_m_axle_pos+20+side_compartment_height+cover_thickness+20)
+    m += handle.up(shell_dropout_m_axle_pos+20+side_compartment_height+cover_thickness+20)
     
     display(m, color=(0.5, 0.5, 0.5, alpha))
 
@@ -431,9 +417,9 @@ print("total:\ncost = {}\nweight = {}\n".format(cost, weight))
 '''
 '''
 m = box(batt_2p_width, batt_2p_height, batt_2p_depth, center = True)
-m = m.up(dropout_m_axle_pos + 20 + side_compartment_height - batt_2p_depth / 2 - common_clearance)
+m = m.up(shell_dropout_m_axle_pos + 20 + side_compartment_height - batt_2p_depth / 2 - common_clearance)
 m1 = box(batt_1p_width, batt_1p_depth, batt_1p_height, center = True)
-m1 = m1.up(dropout_m_axle_pos + 20 + 20 + 2 + common_clearance + batt_1p_height / 2)
+m1 = m1.up(shell_dropout_m_axle_pos + 20 + 20 + 2 + common_clearance + batt_1p_height / 2)
 m1 = m1.back(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
 m += m1
 '''
@@ -442,8 +428,8 @@ m += m1
 #display(m, color = (0, 0, 1, 0.5))
 
 m = box(ctrl_width, ctrl_depth, ctrl_height, center = True)
-#m = m.up(dropout_m_axle_pos + 20 + 20 + common_clearance + ctrl_height / 2)
-m = m.up(dropout_m_axle_pos + 20 + h_icr - ctrl_height / 2)
+#m = m.up(shell_dropout_m_axle_pos + 20 + 20 + common_clearance + ctrl_height / 2)
+m = m.up(shell_dropout_m_axle_pos + 20 + h_icr - ctrl_height / 2)
 m = m.forw(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
 display(m, color = (0, 0.5, 0, 0.5))
 
