@@ -10,7 +10,7 @@ from math import sin, cos, asin, tan, sqrt
 dropout_width = 44.8
 dropout_height = 113.6
 dropout_depth = 21.7
-dropout_m_axle_pos = 24.5
+dropout_m_axle_pos = 45.6
 dropout_p_axle_pos = 40.2
 dropout_sole_size = 51.8
 dropout_sole_pos = 88
@@ -24,9 +24,9 @@ sole_thick = 24
 sole_thick_before_rounding_cathet_a = (sole_thick-small_rounding_r) * cos(deg(sole_angle))
 small_rounding_cathet_b = small_rounding_r*sin(deg(sole_angle))
 delta_after_rounding = small_rounding_r-small_rounding_cathet_b
-top_padding_holes = 3.6
-wheel_axle_big_d = 36.2
-wheel_axle_small_d = 16.2
+top_padding_holes = 4.4
+wheel_axle_big_d = 35.8
+wheel_axle_small_d = 16.5
 pedal_axis_d = 8
 bevel_height = 4.3
 
@@ -48,11 +48,11 @@ def get_dropout_holes(ht):
 		
 		break
 
-	res = n.left(15) + n.right(15)
-	n = n.down(44)
-	res += n.left(15) + n.right(15)
-	n = n.down(26)
-	res += n.left(15) + n.right(15)
+	res = n.left(12.9) + n.right(12.9)
+	n = n.down(20.2)
+	res += n.left(12.9) + n.right(12.9)
+	n = n.down(50.3)
+	res += n.left(12.9) + n.right(12.9)
 	return res
 
 def get_dropout_below_bevel_height():

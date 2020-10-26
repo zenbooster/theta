@@ -5,7 +5,8 @@ import sys
 from math import sqrt, tan, ceil
 import metric
 from common import *
-import mcm5dropout
+from shell import *
+from mcm5v2dropout import *
 import usb
 
 #alp2020l = from_brep('./brep/alp2020l.brep')
@@ -338,8 +339,8 @@ def display_shell_mounts():
     cov -= holes
 
     cov = cov.down(-10)
-    cov -= mcm5dropout.get_dropout_holes(HoleType.fasteners).up(gap_dropout_height/2 - mcm5dropout.top_padding_holes - (sole_thick/2+4/2)).back(dt_holes_back)
-    cov -= cylinder(gap(mcm5dropout.wheel_axle_big_d/2), 4, True).rotateX(deg(90)).back(dt_holes_back).up((gap_dropout_height-sole_thick-4)/2-dropout_m_axle_pos)
+    cov -= get_dropout_holes(HoleType.fasteners).up(gap_dropout_height/2 - top_padding_holes - (sole_thick/2+4/2)).back(dt_holes_back)
+    cov -= cylinder(gap(wheel_axle_big_d/2), 4, True).rotateX(deg(90)).back(dt_holes_back).up((gap_dropout_height-sole_thick-4)/2-dropout_m_axle_pos)
 
     #to_brep(cov.rotateX(deg(-90)), "vector/2x_smc.brep")
 
@@ -359,31 +360,31 @@ def display_shell_mounts():
 def display_wheel():
     shell_height_half = (side_compartment_height) / 2
 
-    #display(torus( \
-    #    (tire_diameter_inch-tire_thickness_inch)*12.7, \
-    #    tire_thickness_inch*12.7).rotateX(deg(90)), \
-    #    color=(0.1, 0.1, 0.1, 0.0)\
-    #)
+    display(torus( \
+        (tire_diameter_inch-tire_thickness_inch)*12.7, \
+        tire_thickness_inch*12.7).rotateX(deg(90)), \
+        color=(0.1, 0.1, 0.1, 0.0)\
+    )
 
-    #display(cylinder(12, 140, center=True).rotateX(deg(90))+\
-    #        cylinder((tire_diameter_inch-2*tire_thickness_inch)*12.7, tire_thickness_inch*12.7, center=True)\
-    #            .rotateX(deg(90)), \
-    #        color=(0.4, 0.2, 0.2, 0.0)
-    #)
+    display(cylinder(12, 140, center=True).rotateX(deg(90))+\
+            cylinder((tire_diameter_inch-2*tire_thickness_inch)*12.7, tire_thickness_inch*12.7, center=True)\
+                .rotateX(deg(90)), \
+            color=(0.4, 0.2, 0.2, 0.0)
+    )
 
-    #dropout = mcm5dropout.get_dropout().down(dropout_height/2 - dropout_m_axle_pos)
-    #display(\
-    #    dropout.back((wheel_arch_width+dropout_depth)/2)+\
-    #    dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
-    #    color=(0.4, 0.4, 0.4, 0.0))
+    dropout = get_dropout().down(dropout_height/2 - dropout_m_axle_pos)
+    display(\
+        dropout.back((wheel_arch_width+dropout_depth)/2)+\
+        dropout.mirrorXZ().forw((wheel_arch_width+dropout_depth)/2),\
+        color=(0.4, 0.4, 0.4, 0.0))
 
 
 #display(handle.rotateX(deg(90)))
 #show()
 #sys.exit(0)
 
-#display_wheel()
-#display_shell_mounts()
+display_wheel()
+display_shell_mounts()
 ##display_shell(0.5)
 display_shell(0)
 
