@@ -431,6 +431,14 @@ m = box(ctrl_width, ctrl_depth, ctrl_height, center = True)
 #m = m.up(shell_dropout_m_axle_pos + 20 + 20 + common_clearance + ctrl_height / 2)
 m = m.up(shell_dropout_m_axle_pos + 20 + h_icr - ctrl_height / 2)
 m = m.forw(wheel_arch_width/2 + dcdt + common_clearance + batt_1p_depth / 2)
-display(m, color = (0, 0.5, 0, 0.5))
+
+# скругляющие силиконовые накладки:
+pw = side_compartment_width+cover_thickness*2
+ph = 40+cover_thickness
+pd = 20+cover_thickness
+m = box(pw, pd, ph, center=True).fillet(pd-0.1, [(0, -pd/2, ph/2)]).back(wheel_arch_width/2 + 20 + ddt + pd/2)
+m = m.up(shell_dropout_m_axle_pos + 20 + side_compartment_height + cover_thickness - ph/2)
+m += m.mirrorXZ()
+display(m, color = (0, 0.2, 0, 0))
 
 show()

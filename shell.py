@@ -21,6 +21,7 @@ tire_thickness_inch = 2.125
 
 # distance between dropauts:
 wheel_arch_width = 93
+#wheel_arch_width = 92
 
 cover_thickness = 2
 
