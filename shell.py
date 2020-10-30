@@ -3,7 +3,6 @@
 from zencad import *
 # для расчета корпуса возмем старые значения
 import mcm5dropout
-#from mcm5v2dropout import *
 
 common_clearance = 5
 batt_1p_width = 203
@@ -36,13 +35,7 @@ top_width = side_compartment_width-5.5*2
 top_height = side_compartment_depth-5.5-23.4786
 top_depth = 4
 
-#shell_dropout_m_axle_pos = dropout_m_axle_pos
-#h_rib = tire_diameter_inch*12.7 + 10 + 20
 h_rib = tire_diameter_inch*12.7 + 10 + 20 - mcm5dropout.dropout_m_axle_pos
-
-#cable_protection_width = dropout_width
-#cable_protection_height = 43+5*2
-#cable_protection_depth = 19-1+4
 
 # в посчитанное впихнём новое колесо:
 tire_diameter_inch = 16
