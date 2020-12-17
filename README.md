@@ -1,5 +1,7 @@
-# theta
+# "Theta" - EUC Project
 Простой, как паровоз, брутальный как бронепоезд ;)
+
+Самодельный корпус для моноколеса.
 
 [![Watch the video](https://repository-images.githubusercontent.com/224591076/f7913b00-def7-11ea-967d-aef23b595d44)](https://youtu.be/x_wpeCRDHl8)
 
