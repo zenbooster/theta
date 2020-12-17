@@ -21,7 +21,8 @@ tire_thickness_inch = 2.125
 # distance between dropauts:
 wheel_arch_width = 92
 
-cover_thickness = 2
+#cover_thickness = 2
+cover_thickness = 1.5
 
 #side_compartment_width = 250
 side_compartment_width = 356

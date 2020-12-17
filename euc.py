@@ -83,13 +83,14 @@ def display_shell(alpha):
     rib = rib.left(side_compartment_width/2 - 10)
     rib += rib.mirrorYZ()
 
-    rib2t = get_alp2020(len2020h_rib2).rotateX(deg(90)).up(h_rib2)
+    rib2t = get_alp2040(len2020h_rib2).rotateX(deg(90)).rotateY(deg(90)).up(h_rib2-10)
     rib2t = rib2t.right(side_compartment_width/2 - 10)
     
     rib2h = get_alp4040con(len2020h_rib2).rotateX(deg(90)).mirrorYZ().up(h_rib2 - 20)
     rib2h = rib2h.left(side_compartment_width/2 - 10-20)
 
     m += rib + rib2h + rib2t
+
     guide = get_alp2020(len2020_guid).rotateY(deg(90))
     guide = guide.up(h_rib)
     guide = guide.back(wheel_arch_width/2 - 10 + dcdt)
@@ -103,7 +104,8 @@ def display_shell(alpha):
     m += con
     
     # уголки усиливающие торцевые части верхнего отсека:
-    con = con2020.rotateX(deg(90)).up(h_rib2-10-20).left(side_compartment_width/2 - 20/2).back(wheel_arch_width/2 - 20/2 + ddt)
+    #con = con2020.rotateX(deg(90)).up(h_rib2-10-20).left(side_compartment_width/2 - 20/2).back(wheel_arch_width/2 - 20/2 + ddt)
+    con = con2040.rotateY(deg(90)).up(h_rib2-10-40).left(side_compartment_width/2 - 20/2).back(wheel_arch_width/2 - 40/2 + ddt)
     con += con.mirrorXZ()
     con += con.mirrorYZ()
     m += con
