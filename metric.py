@@ -55,7 +55,7 @@ def instrument_metric_ext(d, step, h):
 	display(m.rotateX(deg(90)).back(wheel_arch_width/2+screw_m24_len).up(side_compartment_height/2 - rib_ofs-12+2).left(side_compartment_width/2 - rib_ofs))
 	'''
 	path = helix(r=r2, h=h, step=step)
-	base = pipe_shell(spine = path, profiles = [pseg], frenet = True)
+	base = pipe_shell(spine = path, arr = [pseg], frenet = True)
 	return base
 
 def instrument_metric_int(d, step, h):
@@ -100,7 +100,7 @@ def instrument_metric_int(d, step, h):
 	display(m.rotateX(deg(90)).left(10))#.down(shell_height_half + side_compartment_wheel_axle_distance + dropout_height/2-dropout_m_axle_pos).back(150))
 	'''
 	path = helix(r=r2, h=h, step=step)
-	base = pipe_shell(spine = path, profiles = [pseg], frenet = True)
+	base = pipe_shell(spine = path, arr = [pseg], frenet = True)
 	
 	return base
 
